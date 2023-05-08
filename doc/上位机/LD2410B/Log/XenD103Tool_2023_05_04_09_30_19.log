@@ -1,0 +1,6 @@
+2023/05/04 09:30:21.156 => OpenSerial: Com=6 BaudRate=256000, Success=1
+2023/05/04 09:30:23.252 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:30:25.348 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:30:27.581 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:30:29.684 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:31:11.749 => Cancel Read Data

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<AppConfig
+	GateCount="9"
+	MotionSensing="50, 50, 40, 40, 40, 40, 30, 30, 30, "
+	MotionLessSensing="0, 0, 40, 40, 40, 40, 15, 15, 15, "
+	BaudRate="256000"
+	DebugMode="0"
+	MotionGateMax="9"
+	MotionLessGateMax="9"
+	OffTime="5"
+	DistanceCount="120"
+	DistanceUnit="0" />

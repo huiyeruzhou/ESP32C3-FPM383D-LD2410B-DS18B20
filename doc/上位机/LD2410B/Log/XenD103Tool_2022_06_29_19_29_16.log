@@ -1,0 +1,50 @@
+2022/06/29 19:29:23.461 => OpenSerial: Com=16 BaudRate=256000, Success=1
+2022/06/29 19:29:23.476 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) Success
+2022/06/29 19:29:23.476 => protocol version = 1, send_recv buffer size = 64
+2022/06/29 19:29:23.581 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) Success
+2022/06/29 19:29:23.581 => protocol version = 1, send_recv buffer size = 64
+2022/06/29 19:29:23.586 => CRadarProtocolProcess::UpdateVersion: CMDID(0x0000) Success
+2022/06/29 19:29:23.586 => GetVersion Return: v1.4.4_32772.0
+2022/06/29 19:29:28.138 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) Success
+2022/06/29 19:29:28.138 => protocol version = 1, send_recv buffer size = 64
+2022/06/29 19:29:28.255 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) Success
+2022/06/29 19:29:28.255 => protocol version = 1, send_recv buffer size = 64
+2022/06/29 19:29:28.816 => CRadarProtocolProcess::SendCommand: CMDID(0x0063) Success
+2022/06/29 19:29:28.821 => CRadarProtocolProcess::CloseCmdMode: CMDID(0x00FE) Success
+2022/06/29 19:29:28.831 => thread create success, thread handle=0x00000888, id=18656, name=ABDData
+2022/06/29 19:29:28.831 => thread information, name=ABDData, tid=18656(0x000048e0)
+2022/06/29 19:29:28.991 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.098 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.203 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.307 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.413 => State=3, M_D=072, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.507 => State=3, M_D=067, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.610 => State=3, M_D=075, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.687 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.751 => State=3, M_D=060, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.828 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.908 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:29.998 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:30.103 => State=3, M_D=076, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:30.175 => State=3, M_D=072, M_S=100, ML_D=000, ML_S=100, R_D=031
+2022/06/29 19:29:30.279 => State=3, M_D=068, M_S=100, ML_D=000, ML_S=100, R_D=033
+2022/06/29 19:29:30.382 => State=3, M_D=050, M_S=100, ML_D=000, ML_S=100, R_D=033
+2022/06/29 19:29:30.456 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=030
+2022/06/29 19:29:30.552 => State=3, M_D=066, M_S=100, ML_D=000, ML_S=100, R_D=033
+2022/06/29 19:29:30.661 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=030
+2022/06/29 19:29:30.725 => State=3, M_D=042, M_S=100, ML_D=000, ML_S=100, R_D=030
+2022/06/29 19:29:30.791 => State=3, M_D=039, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:30.900 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:30.995 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.073 => State=3, M_D=038, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.179 => State=3, M_D=060, M_S=097, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.276 => State=3, M_D=077, M_S=100, ML_D=000, ML_S=100, R_D=030
+2022/06/29 19:29:31.351 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.459 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.546 => State=3, M_D=064, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.632 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.740 => State=3, M_D=073, M_S=100, ML_D=000, ML_S=100, R_D=031
+2022/06/29 19:29:31.816 => State=3, M_D=030, M_S=100, ML_D=000, ML_S=100, R_D=000
+2022/06/29 19:29:31.896 => State=3, M_D=061, M_S=100, ML_D=000, ML_S=100, R_D=030
+2022/06/29 19:29:31.984 => State=3, M_D=065, M_S=100, ML_D=000, ML_S=100, R_D=033
+2022/06/29 19:29:32.060 => State=3, M_D=0

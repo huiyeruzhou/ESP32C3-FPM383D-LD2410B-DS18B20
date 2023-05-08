@@ -1,0 +1,26 @@
+2023/05/04 09:15:57.066 => OpenSerial: Com=6 BaudRate=256000, Success=1
+2023/05/04 09:15:59.152 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:16:01.248 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:16:03.467 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:16:05.565 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:17:09.690 => OpenSerial: Com=6 BaudRate=256000, Success=1
+2023/05/04 09:17:11.792 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:17:13.885 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:17:16.099 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:17:18.197 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:20:02.516 => OpenSerial: Com=6 BaudRate=256000, Success=1
+2023/05/04 09:20:04.591 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:20:06.664 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:20:08.877 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:20:10.953 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:23:08.795 => OpenSerial: Com=6 BaudRate=256000, Success=1
+2023/05/04 09:23:10.873 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:23:12.945 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:23:15.146 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:23:17.218 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:26:38.888 => OpenSerial: Com=6 BaudRate=256000, Success=1
+2023/05/04 09:26:40.974 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:26:43.052 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:26:45.253 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:26:47.329 => CRadarProtocolProcess::OpenCmdMode: CMDID(0x00FF) failed with:A001
+2023/05/04 09:26:50.190 => Cancel Read Data
