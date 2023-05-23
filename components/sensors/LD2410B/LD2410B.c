@@ -43,7 +43,7 @@ uint8_t getDistance(uint16_t *distance) {
     }
     printf("\n");
     /*提取距离值*/
-    *distance = (PS_ReceiveBuffer[head + 15] << 8) | PS_ReceiveBuffer[head + 16];
+    *distance = (PS_ReceiveBuffer[head + 16] << 8) | PS_ReceiveBuffer[head + 15];
     /*返回运动状态, 1代表静物,2代表动物,3代表既有静物又有动物*/
     return PS_ReceiveBuffer[head + 8];
 }
