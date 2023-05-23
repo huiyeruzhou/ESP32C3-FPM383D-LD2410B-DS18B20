@@ -1,0 +1,23 @@
+syntax="proto2";
+
+package sensor; 
+message Empty {}
+message Status{
+    required bool status = 1;
+}
+message Value{
+    required float value = 1;
+}
+message Configure{
+    required float configure = 1;
+}
+
+service SensorService 
+{
+    rpc open(Empty) returns (Status) {}
+    rpc close(Empty) returns (Status) {}
+    rpc read(Empty) returns (Value) {}
+    rpc configure(Value) returns (Status) {}
+}
+
+
