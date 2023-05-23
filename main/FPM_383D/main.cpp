@@ -50,6 +50,7 @@ extern "C" void app_main(void) {
             if (!start) {
                 rsp->status = 1;
                 rsp->value = -1;
+                return rpc_status::Success;
             }
             uint16_t id = 0, score = 0;
             int status = PS_SearchMB(&id, &score);
@@ -62,7 +63,6 @@ extern "C" void app_main(void) {
                 rsp->status = 3;
                 ESP_LOGW(TAG, "Macth Failed, score=%d", score);
                 rsp->value = (float) id;
-                return rpc_status::Fail;
             }
             else {
                 ESP_LOGW(TAG, "id=%d, score=%d", id, score);
