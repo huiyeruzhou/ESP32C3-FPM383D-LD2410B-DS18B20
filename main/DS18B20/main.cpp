@@ -53,6 +53,7 @@ extern "C" void app_main(void) {
             if (!start) {
                 rsp->status = 1;
                 rsp->value = -1;
+                ESP_LOGE(TAG, "Cannot read before open");
                 return rpc_status::Success;
             }
             rsp->status = 0;

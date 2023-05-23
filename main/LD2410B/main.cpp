@@ -59,18 +59,22 @@ extern "C" void app_main(void)
         }
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
-            if(!start) {
+            if (!start) {
+                rsp->status = 1;
                 rsp->value = -1;
-                return rpc_status::Fail;
+                ESP_LOGE(TAG, "Cannot read before open");
+                return rpc_status::Success;
             }
             uint16_t distance = 0;
             int mode = getDistance(&distance);
             if (mode == 0xFF) {
                 ESP_LOGI(TAG, "Error Mode");
+                rsp->status = 2
                 rsp->value = -1;
-                return rpc_status::Fail;
+                return rpc_status::Success;
             }
             ESP_LOGI(TAG, "Mode: %d, Distance: %d", mode, distance);
+            rsp->status = 0;
             rsp->value = (float) distance;
             return rpc_status::Success;
         }
