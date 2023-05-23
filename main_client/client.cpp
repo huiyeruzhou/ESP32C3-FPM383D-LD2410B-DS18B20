@@ -6,14 +6,13 @@ __attribute__ ((unused)) static const char *TAG = "Sensors Client";
 int main(int argc, char **argv) {
     // system("sudo ifconfig eth0 192.168.0.100 netmask 255.255.255.0");
     /* eRPC client side initialization */
-    auto client = new sensor_SensorService_Client("192.168.93.151", 12345);
+    auto client = new sensor_SensorService_Client("192.168.93.194", 12345);
     /* code */
-    int32_t ret = 1;
+    int sensor = 1;
     if (rpc_status::Success != client->open()) return -1;
     sensor_Empty empty;
     sensor_Status status;
     sensor_Value value;
-    int sensor = 1;
     client->open(&empty, &empty);
     printf("response: %" PRId16 "\n", status.status);
     for (;;) {
