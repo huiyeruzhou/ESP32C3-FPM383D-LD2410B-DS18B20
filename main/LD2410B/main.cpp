@@ -31,7 +31,7 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(ret);
 
     //Initialize wifi
-    ip_set("192.168.1.120", "255.255.255.0", "192.168.1.1");
+    // ip_set("192.168.1.120", "255.255.255.0", "192.168.1.1");
     wifi_init_sta("yu", "esp32c3.");
 
     //Initialize serial

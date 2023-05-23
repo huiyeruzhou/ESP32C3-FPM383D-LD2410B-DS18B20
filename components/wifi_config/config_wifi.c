@@ -9,7 +9,7 @@ static EventGroupHandle_t s_wifi_event_group;
 #define WIFI_FAIL_BIT      BIT1
 
 static const char *TAG = "WIFI";
-
+static int ip_static = 0;
 static const char *ip_ip, *ip_netmask, *ip_gw;
 
 static int s_retry_num = 0;
@@ -47,7 +47,7 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
     }
-    else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED) {
+    else if (ip_static && event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED) {
         example_set_static_ip(arg);
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
@@ -70,6 +70,7 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
 }
 
 void ip_set(const char *ip, const char *mask, const char *gw) {
+    ip_static = 1;
     ip_ip = ip;
     ip_netmask = mask;
     ip_gw = gw;

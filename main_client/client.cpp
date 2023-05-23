@@ -6,7 +6,7 @@
 int main(int argc, char **argv) {
     // system("sudo ifconfig eth0 192.168.0.100 netmask 255.255.255.0");
     /* eRPC client side initialization */
-    auto client = new sensor_SensorService_Client("192.168.1.120", 12345);
+    auto client = new sensor_SensorService_Client("192.168.93.194", 12345);
     /* code */
     int32_t ret = 0;
     if (rpc_status::Success != client->open()) return -1;
