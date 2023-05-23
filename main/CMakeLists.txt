@@ -1,4 +1,4 @@
-set(program LD2410B)
+set(program DS18B20)
 file(GLOB_RECURSE SRCS
         ${program}/*.cpp
         ${program}/*.c
