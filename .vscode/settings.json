@@ -1,6 +1,6 @@
 {
   "C_Cpp.intelliSenseEngine": "Tag Parser",
-  "idf.port": "/dev/ttyACM0",
+  "idf.port": "/dev/ttyUSB0",
   "idf.adapterTargetName": "esp32c3",
   "files.associations": {
     "*.c": "c",
