@@ -6,7 +6,8 @@ message Status{
     required bool status = 1;
 }
 message Value{
-    required float value = 1;
+    required uint32 status = 1;
+    required float value = 2;
 }
 message Configure{
     required float configure = 1;

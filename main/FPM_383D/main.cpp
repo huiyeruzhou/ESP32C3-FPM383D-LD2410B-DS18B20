@@ -48,25 +48,28 @@ extern "C" void app_main(void) {
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
             if (!start) {
+                rsp->status = 1;
                 rsp->value = -1;
-                return rpc_status::Fail;
             }
             uint16_t id = 0, score = 0;
             int status = PS_SearchMB(&id, &score);
             if (status) {
+                rsp->status = 2;
+                rsp->value = (float) id;
                 ESP_LOGE(TAG, "Failed to recognize finger, status=%d", status);
-                return rpc_status::Fail;
             }
             else if (id == 0xFFFF) {
+                rsp->status = 3;
                 ESP_LOGW(TAG, "Macth Failed, score=%d", score);
                 rsp->value = (float) id;
                 return rpc_status::Fail;
             }
             else {
                 ESP_LOGW(TAG, "id=%d, score=%d", id, score);
+                rsp->status = 0;
                 rsp->value = (float) id;
-                return rpc_status::Success;
             }
+            return rpc_status::Success;
         }
         rpc_status configure(sensor_Value *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "configure");

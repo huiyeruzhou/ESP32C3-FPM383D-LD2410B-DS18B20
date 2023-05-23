@@ -25,6 +25,7 @@ typedef struct _sensor_Status {
 } sensor_Status;
 
 typedef struct _sensor_Value {
+    uint32_t status;
     float value;
 } sensor_Value;
 
@@ -40,16 +41,17 @@ extern "C" {
 /* Initializer values for message structs */
 #define sensor_Empty_init_default                {0}
 #define sensor_Status_init_default               {0}
-#define sensor_Value_init_default                {0}
+#define sensor_Value_init_default                {0, 0}
 #define sensor_Configure_init_default            {0}
 #define sensor_Empty_init_zero                   {0}
 #define sensor_Status_init_zero                  {0}
-#define sensor_Value_init_zero                   {0}
+#define sensor_Value_init_zero                   {0, 0}
 #define sensor_Configure_init_zero               {0}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define sensor_Status_status_tag                 1
-#define sensor_Value_value_tag                   1
+#define sensor_Value_status_tag                  1
+#define sensor_Value_value_tag                   2
 #define sensor_Configure_configure_tag           1
 
 /* Struct field encoding specification for nanopb */
@@ -64,7 +66,8 @@ X(a, STATIC,   REQUIRED, BOOL,     status,            1)
 #define sensor_Status_DEFAULT NULL
 
 #define sensor_Value_FIELDLIST(X, a) \
-X(a, STATIC,   REQUIRED, FLOAT,    value,             1)
+X(a, STATIC,   REQUIRED, UINT32,   status,            1) \
+X(a, STATIC,   REQUIRED, FLOAT,    value,             2)
 #define sensor_Value_CALLBACK NULL
 #define sensor_Value_DEFAULT NULL
 
@@ -88,7 +91,7 @@ extern const pb_msgdesc_t sensor_Configure_msg;
 #define sensor_Configure_size                    5
 #define sensor_Empty_size                        0
 #define sensor_Status_size                       2
-#define sensor_Value_size                        5
+#define sensor_Value_size                        11
 
 /* Service Definations */
 class sensor_SensorService_Service : public erpc::Service {

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <client/rpc_client.hpp>
-
+__attribute__ ((unused)) static const char *TAG = "Sensors Client";
 int main(int argc, char **argv) {
     // system("sudo ifconfig eth0 192.168.0.100 netmask 255.255.255.0");
     /* eRPC client side initialization */
@@ -18,6 +18,14 @@ int main(int argc, char **argv) {
     printf("response: %" PRId16 "\n", status.status);
     for (;;) {
         client->read(&empty, &value);
+        
+        if (value.status == 0) {
+            LOGI(TAG, "Success");
+        }
+        else {
+            LOGE(TAG, "Failed, status = %" PRId16, value.status);
+        }
+        
         switch (sensor) {
         case 0:/*DS18B20*/
             printf("temperature: %f\n", value.value);
