@@ -31,7 +31,7 @@ extern "C" void app_main(void) {
     auto server = new erpc::SimpleServer("localhost", 12345);
     class myService :public sensor_SensorService_Service {
     private:
-        bool start;
+        bool start = false;
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
