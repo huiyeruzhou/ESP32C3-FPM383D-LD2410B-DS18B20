@@ -14,10 +14,10 @@ message Configure{
 
 service SensorService 
 {
-    rpc open(Empty) returns (Status) {}
-    rpc close(Empty) returns (Status) {}
+    rpc open(Empty) returns (Empty) {}
+    rpc close(Empty) returns (Empty) {}
     rpc read(Empty) returns (Value) {}
-    rpc configure(Value) returns (Status) {}
+    rpc configure(Value) returns (Empty) {}
 }
 
 

@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     sensor_Empty empty;
     sensor_Status status;
     sensor_Value value;
-    client->open(&empty, &status);
+    client->open(&empty, &empty);
     printf("response: %" PRId16 "\n", status.status);
     for (;;) {
         client->read(&empty, &value);

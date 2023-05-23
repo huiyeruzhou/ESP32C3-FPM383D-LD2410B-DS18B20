@@ -97,10 +97,10 @@ public:
     virtual ~sensor_SensorService_Service() {}
 	using erpc::Service::Service;
 	using erpc::Service::addMethod;
-    virtual rpc_status open(sensor_Empty *request, sensor_Status *response);
-    virtual rpc_status close(sensor_Empty *request, sensor_Status *response);
+    virtual rpc_status open(sensor_Empty *request, sensor_Empty *response);
+    virtual rpc_status close(sensor_Empty *request, sensor_Empty *response);
     virtual rpc_status read(sensor_Empty *request, sensor_Value *response);
-    virtual rpc_status configure(sensor_Value *request, sensor_Status *response);
+    virtual rpc_status configure(sensor_Value *request, sensor_Empty *response);
 };
 
 /* Client Defination */
@@ -110,10 +110,10 @@ public:
     virtual ~sensor_SensorService_Client() {}
 	using erpc::Client::open;
 	using erpc::Client::Client;
-    virtual rpc_status open(sensor_Empty *request, sensor_Status *response);
-    virtual rpc_status close(sensor_Empty *request, sensor_Status *response);
+    virtual rpc_status open(sensor_Empty *request, sensor_Empty *response);
+    virtual rpc_status close(sensor_Empty *request, sensor_Empty *response);
     virtual rpc_status read(sensor_Empty *request, sensor_Value *response);
-    virtual rpc_status configure(sensor_Value *request, sensor_Status *response);
+    virtual rpc_status configure(sensor_Value *request, sensor_Empty *response);
 };
 #ifdef __cplusplus
 } /* extern "C" */

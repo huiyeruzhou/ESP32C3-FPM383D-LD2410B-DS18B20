@@ -40,21 +40,29 @@ extern "C" void app_main(void)
     //Initialize RPC
     auto server = new erpc::SimpleServer("localhost", 12345);
     class myService :public sensor_SensorService_Service {
+    private:
+        bool start;
     public:
-        rpc_status open(sensor_Empty *req, sensor_Status *rsp) override {
+        rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
             /*open*/
-            rsp->status = true;
+            start = true;
             return rpc_status::Success;
         }
-        rpc_status close(sensor_Empty *req, sensor_Status *rsp) override {
+        rpc_status close(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "close");
             /*close*/
-            rsp->status = true;
+            if(start) {
+                start = false;
+            }
             return rpc_status::Success;
         }
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
+            if(!start) {
+                rsp->value = -1;
+                return rpc_status::Fail;
+            }
             uint16_t distance = 0;
             int mode = getDistance(&distance);
             if (mode == 0xFF) {
@@ -66,10 +74,9 @@ extern "C" void app_main(void)
             rsp->value = (float) distance;
             return rpc_status::Success;
         }
-        rpc_status configure(sensor_Value *req, sensor_Status *rsp) override {
+        rpc_status configure(sensor_Value *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "configure");
             /*some configure*/
-            rsp->status = true;
             return rpc_status::Success;
         }
     };
