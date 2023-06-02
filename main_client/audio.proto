@@ -1,0 +1,15 @@
+syntax="proto2";
+
+package audio; 
+message Empty {};
+message ConnectInfo{
+    required int32 port = 1;
+}
+
+service AudioService 
+{
+    rpc open(Empty) returns (ConnectInfo) {}
+    rpc close(Empty) returns (Empty) {}
+    rpc read(Empty) returns (Value) {}
+    rpc configure(Value) returns (Empty) {}
+}

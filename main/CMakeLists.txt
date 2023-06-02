@@ -6,4 +6,4 @@ file(GLOB_RECURSE SRCS
         )
 idf_component_register(SRCS ${SRCS}
                     INCLUDE_DIRS "."
-                    REQUIRES sensors wifi_config myrpc)
+                    REQUIRES sensors wifi_config myrpc lwip udp_broadcast ability_framework esp_http_server)

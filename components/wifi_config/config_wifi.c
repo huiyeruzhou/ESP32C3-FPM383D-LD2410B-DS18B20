@@ -11,6 +11,8 @@ static EventGroupHandle_t s_wifi_event_group;
 static const char *TAG = "WIFI";
 static int ip_static = 0;
 static const char *ip_ip, *ip_netmask, *ip_gw;
+static bool is_ip_connected = false;
+static char ip_connected[20];
 
 static int s_retry_num = 0;
 
@@ -51,6 +53,7 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
         example_set_static_ip(arg);
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+        is_ip_connected = false;
         if (s_retry_num < EXAMPLE_MAXIMUM_RETRY) {
             esp_wifi_connect();
             s_retry_num++;
@@ -64,6 +67,9 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *) event_data;
         ESP_LOGI(TAG, "static ip:" IPSTR, IP2STR(&event->ip_info.ip));
+        int len = snprintf(ip_connected, 20, IPSTR, IP2STR(&event->ip_info.ip));
+        is_ip_connected = true;
+        ip_connected[len] = 0;
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
@@ -76,7 +82,7 @@ void ip_set(const char *ip, const char *mask, const char *gw) {
     ip_gw = gw;
 }
 
-void wifi_init_sta(const char *ssid, const char *password) {
+esp_netif_t *wifi_init_sta() {
     ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
     s_wifi_event_group = xEventGroupCreate();
 
@@ -90,13 +96,12 @@ void wifi_init_sta(const char *ssid, const char *password) {
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    esp_event_handler_instance_t instance_any_id;
-    esp_event_handler_instance_t instance_got_ip;
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, sta_netif, &instance_any_id));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, sta_netif, &instance_got_ip));
+    return sta_netif;
 
+}
+void wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid, const char *password) {
     wifi_config_t wifi_config = {
-        .sta = {
+    .sta = {
             // .ssid = CONFIG_EXAMPLE_WIFI_SSID,
             // .password = CONFIG_EXAMPLE_WIFI_PASSWORD,
             /* Setting a password implies station will connect to all security modes including WEP/WPA.
@@ -110,10 +115,15 @@ void wifi_init_sta(const char *ssid, const char *password) {
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
 
     ESP_LOGI(TAG, "wifi_init_sta finished.");
-
+    
+    static esp_event_handler_instance_t instance_any_id;
+    static esp_event_handler_instance_t instance_got_ip;
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, sta_netif, &instance_any_id));
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, sta_netif, &instance_got_ip));
+    
+    ESP_ERROR_CHECK(esp_wifi_start());
     /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
      * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
     EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
@@ -138,5 +148,9 @@ void wifi_init_sta(const char *ssid, const char *password) {
     ESP_ERROR_CHECK(esp_event_handler_instance_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, instance_got_ip));
     ESP_ERROR_CHECK(esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, instance_any_id));
     vEventGroupDelete(s_wifi_event_group);
+
 }
 
+const char *get_ip_connected() {
+    return is_ip_connected ? ip_connected : "";
+}

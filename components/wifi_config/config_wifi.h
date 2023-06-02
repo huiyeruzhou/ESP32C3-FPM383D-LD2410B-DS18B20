@@ -22,7 +22,8 @@
 extern "C" {
 #endif
     void ip_set(const char *ip, const char *mask, const char *gw);
-    void wifi_init_sta(const char *ssid, const char *password);
+    esp_netif_t *wifi_init_sta();
+    void wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid, const char *password);
 #ifdef __cplusplus
 }
 #endif
