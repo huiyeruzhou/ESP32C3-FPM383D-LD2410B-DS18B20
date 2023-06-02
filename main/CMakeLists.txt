@@ -1,4 +1,4 @@
-set(program DS18B20)
+set(program FPM_383D)
 file(GLOB_RECURSE SRCS
         ${program}/*.cpp
         ${program}/*.c
