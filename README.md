@@ -3,6 +3,24 @@
 ## 项目说明
 
 本项目包含对ESP32C3芯片UART串口驱动的简单封装，及其在此基础上实现的三个传感器的驱动代码。
+```bash
+├── components
+│   ├── ability_framework #能力框架(ability_context为传感器版本)
+│   ├── myrpc             #rpc框架
+│   ├── sensors           #传感器驱动代码.包含UART配置和相关命令读写
+│   ├── udp_broadcast     #UDP广播
+│   └── wifi_config       #wifi配置
+├── doc
+│   ├── 上位机
+│   ├── 串口工具
+│   └── 技术手册
+├── img
+├── main            #ESP侧代码
+│   ├── DS18B20           #温度传感器
+│   ├── FPM_383D          #指纹传感器
+│   ├── LD2410B           #雷达传感器
+└── main_client     #Linux测测试客户端代码
+```
 
 ## 运行项目代码
 

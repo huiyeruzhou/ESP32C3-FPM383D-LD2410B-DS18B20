@@ -37,20 +37,28 @@ void close() {
     sensor_Empty empty;
     client->close(&empty, &empty);
 }
+void configure(uint32_t config) {
+    sensor_Value value;
+    sensor_Empty empty;
+    value.value = (float) config;
+    client->configure(&value, &empty);
+}
 int main(int argc, char **argv) {
     // system("sudo ifconfig eth0 192.168.0.100 netmask 255.255.255.0");
     /* eRPC client side initialization */
-    client = new sensor_SensorService_Client("192.168.93.26", 12345);
+    client = new sensor_SensorService_Client("192.168.50.131", 12345);
     /* code */
     int sensor = 1;
     if (rpc_status::Success != client->open()) return -1;
-    LOGE(TAG, "try to read when sensor is closed");
-    read(sensor);
+    // LOGE(TAG, "try to read when sensor is closed");
+    // read(sensor);
     LOGE(TAG, "open the sensor");
     open();
     for (int i = 0;i < 3;i++) {
         LOGE(TAG, "read the sensor for %d time", i);
         read(sensor);
+        LOGE(TAG, "confgiure the sensor");
+        configure(100);
         sleep(1);
     }
     LOGE(TAG, "close the sensor");

@@ -20,5 +20,9 @@ service SensorService
     rpc read(Empty) returns (Value) {}
     rpc configure(Value) returns (Empty) {}
 }
+service UpdateService 
+{
+    rpc update(Value) returns (Empty) {}
+}
 
 
