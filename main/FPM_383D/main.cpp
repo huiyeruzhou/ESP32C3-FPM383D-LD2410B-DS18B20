@@ -113,6 +113,7 @@ extern "C" void app_main(void) {
     class myService :public sensor_SensorService_Service {
     private:
         bool start = false;
+        float limit = -1;
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
@@ -148,13 +149,21 @@ extern "C" void app_main(void) {
             }
             else {
                 ESP_LOGW(TAG, "id=%d, score=%d", id, score);
-                rsp->status = 0;
-                rsp->value = (float) id;
+                if (limit < 0 || score > limit) {
+                    rsp->status = 0;
+                    rsp->value = (float) id;
+                }
+                else {
+                    rsp->status = 4;
+                    rsp->value = (float) id;
+                    ESP_LOGE(TAG, "Score too low, limit=%f", limit);
+                }
             }
             return rpc_status::Success;
         }
         rpc_status configure(sensor_Value *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "configure");
+            limit = req->value;
             /*some configure*/
             return rpc_status::Success;
         }

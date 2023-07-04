@@ -13,6 +13,8 @@
 #include <cstring>
 #include <string>
 #include <ctime>
+#include <cfloat>
+#include <atomic>
 #include "nvs_flash.h"
 
 #include "sdkconfig.h"
@@ -63,15 +65,15 @@ static esp_err_t stop_webserver(httpd_handle_t server) {
 static void disconnect_handler(void *arg, esp_event_base_t event_base,
     int32_t event_id, void *event_data) {
     httpd_handle_t *server = (httpd_handle_t *) arg;
-    if (*server) {
-        ESP_LOGI(TAG, "Stopping webserver");
-        if (stop_webserver(*server) == ESP_OK) {
-            *server = NULL;
-        }
-        else {
-            ESP_LOGE(TAG, "Failed to stop http server");
-        }
-    }
+    // if (*server) {
+    //     ESP_LOGI(TAG, "Stopping webserver: %p", *server);
+    //     if (stop_webserver(*server) == ESP_OK) {
+    //         *server = NULL;
+    //     }
+    //     else {
+    //         ESP_LOGE(TAG, "Failed to stop http server");
+    //     }
+    // }
 }
 
 static void connect_handler(void *arg, esp_event_base_t event_base,
@@ -83,7 +85,13 @@ static void connect_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-
+std::atomic<float> temperature;
+void stub(void *) {
+    while (1) {
+        temperature = get_temperature();
+        vTaskDelay(200 / portTICK_PERIOD_MS);
+    }
+}
 extern "C" void app_main(void) {
     static httpd_handle_t server = NULL;
     printf("Hello world!\n");
@@ -115,6 +123,7 @@ extern "C" void app_main(void) {
     class myService :public sensor_SensorService_Service {
     private:
         bool start = false;
+        bool config_int = false;
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
@@ -137,12 +146,26 @@ extern "C" void app_main(void) {
                 return rpc_status::Success;
             }
             rsp->status = 0;
-            rsp->value = get_temperature();
+            // rsp->value = get_temperature();
+            rsp->value = temperature;
+            if (config_int) {
+                rsp->value = (int)rsp->value;
+            }
             ESP_LOGW(TAG, "T=%+06.1fC\n", rsp->value);
             return rpc_status::Success;
         }
         rpc_status configure(sensor_Value *req, sensor_Empty *rsp) override {
-            ESP_LOGI(TAG, "configure");
+            //比较浮点数相等
+            if (req->value == 0) {
+                config_int = false;
+            }
+            else if (req->value == 1) {
+                config_int = true;
+            }
+            else {
+                ESP_LOGE(TAG, "Invalid configure");
+                return rpc_status::InvalidArgument;
+            }
             /*some configure*/
             return rpc_status::Success;
         }
@@ -167,13 +190,7 @@ extern "C" void app_main(void) {
 
     server = start_webserver();
 
-
-
-    
-
-    while (1) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
+    xTaskCreate(stub, "serial", 4096, NULL, 0, NULL);
 }
 
 
