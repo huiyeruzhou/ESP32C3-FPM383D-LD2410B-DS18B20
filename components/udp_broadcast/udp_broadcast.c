@@ -81,5 +81,5 @@ static void udp_broad_task(void *pvParameters)
  * @param arg 广播内容
 */
 void create_broad_task(const char * arg){
-    xTaskCreate(udp_broad_task, "udp_broadcast", 4096, arg, 5, NULL);
+    xTaskCreate(udp_broad_task, "udp_broadcast", 4096, arg, 0, NULL);
 }

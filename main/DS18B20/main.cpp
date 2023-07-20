@@ -86,11 +86,39 @@ static void connect_handler(void *arg, esp_event_base_t event_base,
 }
 
 std::atomic<float> temperature;
-void stub(void *) {
-    while (1) {
+std::atomic <bool> run = false;
+void stub(void *ctx) {
+    //初始化：获取手机IP，Port，创建并打开RPC客户端
+    AbilityContext *speakerContext = (AbilityContext *) ctx;
+    auto updateClient = new sensor_UpdateService_Client(
+        speakerContext->getConnectIP(),
+        speakerContext->getConnectPort()
+    );
+    updateClient->open();
+    //同步变量
+    while (run) {
+        //传感器驱动，获取温度值
         temperature = get_temperature();
+
+        //调用RPC
+        sensor_Value value;
+        sensor_Empty empty;
+        value.value = temperature;
+        value.status = 0;
+        rpc_status ret = updateClient->update(&value, &empty);
+
+        //打印日志
+        if (ret != rpc_status::Success) {
+            ESP_LOGE(TAG, "Failed to update: T=%+06.1fC\n", value.value);
+        }
+        else {
+            ESP_LOGI(TAG, "Update success: T=%+06.1fC\n", value.value);
+        }
         vTaskDelay(200 / portTICK_PERIOD_MS);
     }
+    //退出前释放资源
+    delete updateClient;
+    vTaskDelete(NULL);
 }
 extern "C" void app_main(void) {
     static httpd_handle_t server = NULL;
@@ -122,24 +150,26 @@ extern "C" void app_main(void) {
     auto rpc_server = new erpc::SimpleServer("localhost", 12345);
     class myService :public sensor_SensorService_Service {
     private:
-        bool start = false;
         bool config_int = false;
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
-            start = true;
+            if (!run) {
+                run = true;
+                xTaskCreate(stub, "serial", 4096, speakerContext, 3, NULL);
+            }
             return rpc_status::Success;
         }
         rpc_status close(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "close");
-            if (start) {
-                start = false;
+            if (run) {
+                run = false;
             }
             return rpc_status::Success;
         }
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
-            if (!start) {
+            if (!run) {
                 rsp->status = 1;
                 rsp->value = -1;
                 ESP_LOGE(TAG, "Cannot read before open");
@@ -189,8 +219,6 @@ extern "C" void app_main(void) {
     );
 
     server = start_webserver();
-
-    xTaskCreate(stub, "serial", 4096, NULL, 0, NULL);
 }
 
 

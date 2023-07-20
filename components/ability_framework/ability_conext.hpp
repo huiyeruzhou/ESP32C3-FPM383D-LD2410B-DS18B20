@@ -24,7 +24,9 @@ enum Cmd {
 };
 class AbilityContext {
 private:
-    erpc::SimpleServer* rpc_server;
+    erpc::SimpleServer *rpc_server;
+    char connectIp[16];
+    uint16_t connectPort;
     constexpr static const char *TAG = "ABILITY_CONTEXT";
     
     const char *abilityName = "";
@@ -72,6 +74,20 @@ public:
         rpc_server = server;
         //convert to UNIX time_t
         
+    }
+    void setConnectIP(char* ipArg) {
+        if(strncpy(connectIp, ipArg, 16) != connectIp) {
+            ESP_LOGE(TAG, "setConnectIp failed");
+        }
+    }
+    const char* getConnectIP() {
+        return connectIp;
+    }
+    void setConnectPort(uint16_t portArg) {
+        connectPort = portArg;
+    }
+    uint16_t getConnectPort() {
+        return connectPort;
     }
     int getLifecyclePort() {
         return lifecyclePort;
@@ -127,12 +143,16 @@ public:
     void disconnect() {
         assert(status < 5);
         status = status_transfer[status][2];
-        if (microphone_server_handle != NULL) {
-            // vTaskDelete(microphone_server_handle);
+
+        if (rpc_status::Success != rpc_server->close()) {
+            // 任务创建失败
+            ESP_LOGE(TAG, "RPC关闭失败");
         }
         else {
-            ESP_LOGE(TAG, "microphone_server_handle is NULL");
+            // 任务创建成功
+            ESP_LOGI(TAG, "RPC关闭成功");
         }
+
         gettimeofday((struct timeval *) &last_update, NULL);
     }
     void terminate() {

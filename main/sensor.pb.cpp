@@ -26,6 +26,9 @@ static const char* sensor_SensorService_method_names[] = {
     "/sensor.SensorService/read",
     "/sensor.SensorService/configure",
 };
+static const char* sensor_UpdateService_method_names[] = {
+    "/sensor.UpdateService/update",
+};
 /* Method Registration */
 sensor_SensorService_Service::sensor_SensorService_Service() {
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
@@ -43,6 +46,12 @@ sensor_SensorService_Service::sensor_SensorService_Service() {
        addMethod(new erpc::Method<sensor_Value, sensor_Empty>(
                sensor_SensorService_method_names[3], sensor_Value_fields, sensor_Empty_fields,
                [](Service *s, sensor_Value *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->configure(i, o);},
+               this));
+}
+sensor_UpdateService_Service::sensor_UpdateService_Service() {
+       addMethod(new erpc::Method<sensor_Value, sensor_Empty>(
+               sensor_UpdateService_method_names[0], sensor_Value_fields, sensor_Empty_fields,
+               [](Service *s, sensor_Value *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_UpdateService_Service*>(s)->update(i, o);},
                this));
 }
 /* Server stub */
@@ -66,6 +75,11 @@ rpc_status sensor_SensorService_Service::configure(sensor_Value *req, sensor_Emp
     return rpc_status::UnimplmentedService;
 }
 
+rpc_status sensor_UpdateService_Service::update(sensor_Value *req, sensor_Empty *rsp) {
+    LOGW(sensor_UpdateService_method_names[0], "Service Unimplemented!");
+    return rpc_status::UnimplmentedService;
+}
+
 
 /* Client stub */
 rpc_status sensor_SensorService_Client::open(sensor_Empty *req, sensor_Empty *rsp) {
@@ -82,5 +96,9 @@ rpc_status sensor_SensorService_Client::read(sensor_Empty *req, sensor_Value *rs
 
 rpc_status sensor_SensorService_Client::configure(sensor_Value *req, sensor_Empty *rsp) {
     return performRequest(const_cast<char *>(sensor_SensorService_method_names[3]), sensor_Value_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
+}
+
+rpc_status sensor_UpdateService_Client::update(sensor_Value *req, sensor_Empty *rsp) {
+    return performRequest(const_cast<char *>(sensor_UpdateService_method_names[0]), sensor_Value_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
 }
 

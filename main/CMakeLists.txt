@@ -1,4 +1,4 @@
-set(program FPM_383D)
+set(program LD2410B)
 file(GLOB_RECURSE SRCS
         ${program}/*.cpp
         ${program}/*.c
@@ -6,4 +6,5 @@ file(GLOB_RECURSE SRCS
         )
 idf_component_register(SRCS ${SRCS}
                     INCLUDE_DIRS "."
-                    REQUIRES sensors wifi_config myrpc lwip udp_broadcast ability_framework esp_http_server)
+                    REQUIRES sensors wifi_config myrpc lwip udp_broadcast ability_framework esp_http_server esp_system)
+        

@@ -16,7 +16,7 @@ uint8_t getDistance(uint16_t *distance) {
     ESP_LOGI(TAG, "Searching");
     /*清空缓冲区*/
     serial_fulsh();
-    /*接收相当于两个帧长的数据*/
+    /*接收一帧的数据*/
     int len = serial_receive(23, PS_ReceiveBuffer, 5000);
     ESP_LOGI(TAG, "Received %d", len);
     if(len < 23) {

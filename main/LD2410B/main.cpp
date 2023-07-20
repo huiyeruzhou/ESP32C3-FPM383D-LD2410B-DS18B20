@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 #include "esp_log.h"
+#include "esp_system.h"
 #include "serial.h"
 #include "server/simple_server.hpp"
 #include "sensor.pb.hpp"
@@ -21,6 +23,7 @@
 #include <cstring>
 #include <string>
 #include <ctime>
+#include <atomic>
 #include "nvs_flash.h"
 
 #include "sdkconfig.h"
@@ -92,6 +95,119 @@ static void connect_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
+std::atomic<uint16_t> originDistance;
+std::atomic<int> originMode;
+std::atomic <bool> run = false;
+void getDistanceStub(void *) {
+    while (run) {
+        //传感器驱动，获取距离和模式
+        uint16_t distance = 0;
+        int mode = getDistance(&distance);
+        originDistance = distance;
+        originMode = mode;
+        //打印日志
+        ESP_LOGI(TAG, "Mode: %d, Distance: %d", mode, distance);
+        taskYIELD();
+    }
+    vTaskDelete(NULL);
+}
+void stub(void *ctx) {
+    //初始化：获取手机IP，Port，创建并打开RPC客户端
+    AbilityContext *speakerContext = (AbilityContext *) ctx;
+    auto updateClient = new sensor_UpdateService_Client(
+        speakerContext->getConnectIP(),
+        speakerContext->getConnectPort()
+    );
+    updateClient->open();
+    TickType_t xLastWakeTime;
+    const TickType_t xDelay150ms = pdMS_TO_TICKS(150);
+    xLastWakeTime = xTaskGetTickCount();
+    //同步变量
+    while (run) {
+        //传感器驱动，获取距离和模式
+        sensor_Value value;
+        sensor_Empty empty;
+        // int mode = originMode;
+        // int distance = originDistance;
+        uint16_t distance = 0;
+        int mode = getDistance(&distance);
+        // originDistance = distance;
+        if (mode == 0xFF) {
+            ESP_LOGI(TAG, "Error Mode");
+            value.status = 2;
+            value.value = -1;
+        }
+        else {
+            ESP_LOGI(TAG, "Mode: %d, Distance: %d", mode, distance);
+            value.value = (float) distance;
+            value.status = 0;
+        }
+
+        //调用RPC
+        rpc_status ret = updateClient->update(&value, &empty);
+        //打印日志
+        if (ret != rpc_status::Success) {
+            ESP_LOGE(TAG, "Failed to update: Mode: %d, Distance: %d", mode, distance);
+        }
+        else {
+            ESP_LOGI(TAG, "Update success: Mode: %d, Distance: %d", mode, distance);
+        }
+        vTaskDelayUntil(&xLastWakeTime, xDelay150ms);
+    }
+    //退出前释放资源
+    delete updateClient;
+    vTaskDelete(NULL);
+}
+static xQueueHandle gpio_evt_queue = NULL;
+static void IRAM_ATTR gpio_isr_handler(void *arg) {
+    uint32_t gpio_num = (uint32_t) arg;
+    xQueueSendFromISR(gpio_evt_queue, &gpio_num, NULL); //freertos中断中发送消息队列
+}
+static void gpio_task_example(void *arg) {
+    uint32_t io_num;
+    for (;;) {
+        if (xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
+            LOGE(TAG, "GPIO[%" PRIu32 "] intr, val: %d\n", io_num, gpio_get_level((gpio_num_t) io_num));
+        }
+    }
+}
+int GPIO_Init(void) {
+
+    gpio_config_t io_conf;
+    esp_err_t ret;
+
+    io_conf.intr_type = GPIO_INTR_ANYEDGE;
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;
+    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    io_conf.pin_bit_mask = (1 << GPIO_NUM_0);
+    ret = gpio_config(&io_conf);
+    if (ret != ESP_OK) {
+        return ret;
+    }
+    gpio_install_isr_service(0);
+    //hook isr handler for specific gpio pin
+    gpio_isr_handler_add(GPIO_NUM_0, gpio_isr_handler, (void *) GPIO_NUM_0);
+
+    LOGI(TAG, "GPIO Init done.\r\n");
+    return ESP_OK;
+}
+void esp_print_tasks(void) {
+    char *pbuffer = (char *) calloc(1, 2048);
+    printf("--------------- heap:%lu ---------------------\r\n", esp_get_free_heap_size());
+    vTaskList(pbuffer);
+    printf("%s", pbuffer);
+    printf("----------------------------------------------\r\n");
+    free(pbuffer);
+}
+
+void test_task(void *param) {
+    while (1) {
+        esp_print_tasks();
+        vTaskDelay(100 / portTICK_RATE_MS);
+    }
+}
+
 extern "C" void app_main(void)
 {
     static httpd_handle_t server = NULL;
@@ -125,15 +241,17 @@ extern "C" void app_main(void)
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
-            /*open*/
-            start = true;
+            if (!run) {
+                run = true;
+                xTaskCreate(stub, "serial", 4096, speakerContext, 3, NULL);
+                // xTaskCreate(getDistanceStub, "LD2410B serial", 4096, NULL, 1, NULL);
+            }
             return rpc_status::Success;
         }
         rpc_status close(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "close");
-            /*close*/
-            if(start) {
-                start = false;
+            if (run) {
+                run = false;
             }
             return rpc_status::Success;
         }
@@ -183,12 +301,9 @@ extern "C" void app_main(void)
         );
 
     server = start_webserver();
-
-
-
-
-
-    while (1) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
+    // xTaskCreate(test_task, "test_task", 2048, NULL, 24, NULL);
+    // GPIO_Init();
+    // gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t)); //创建消息队列
+    // xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);//创建任务
+    return;
 }

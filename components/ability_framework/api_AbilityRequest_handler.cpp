@@ -84,9 +84,11 @@ esp_err_t api_AbilityRequest_handler(httpd_req_t *req) {
             }
             if (status == 200 && httpd_query_key_value(buf, "connectIP", param, sizeof(param)) == ESP_OK) {
                 ESP_LOGI(TAG, "Found URL query parameter => connectIP=%s", param);
+                speakerContext->setConnectIP(param);
             }
             if (status == 200 && httpd_query_key_value(buf, "connectPort", param, sizeof(param)) == ESP_OK) {
                 ESP_LOGI(TAG, "Found URL query parameter => connectPort=%s", param);
+                speakerContext->setConnectPort(atoi(param));
             }
         }
         else {
