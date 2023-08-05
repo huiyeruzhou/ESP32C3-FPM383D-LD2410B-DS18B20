@@ -32,7 +32,7 @@ static void udp_broad_task(void *pvParameters)
     const char *message = (const char *) pvParameters;
     char payload[128];
     int payload_length = snprintf(payload, sizeof(payload), format_payload, message);
-
+    free(pvParameters);
     while (1) {
         // addr_family = AF_INET;
         // ip_protocol = IPPROTO_IP;
@@ -80,6 +80,7 @@ static void udp_broad_task(void *pvParameters)
  * @brief 创建广播任务
  * @param arg 广播内容
 */
-void create_broad_task(const char * arg){
-    xTaskCreate(udp_broad_task, "udp_broadcast", 4096, arg, 0, NULL);
+void create_broad_task(const char *arg) {
+    ESP_LOGI(TAG, "create_broad_task: %s", arg);
+    xTaskCreate(udp_broad_task, "udp_broadcast", 4096, (void *const) arg, 0, NULL);
 }
