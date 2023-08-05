@@ -22,8 +22,8 @@ void serial_init(int baud_rate) {
     intr_alloc_flags = ESP_INTR_FLAG_IRAM;      //如果要求中断向量放在iram中，设置这个标志
 #endif
 
-    //安装驱动程序, UART串口号为UART_PORT_NUM, 接收缓冲区大小为BUF_SIZE * 2, 发送缓冲区大小为0, 不使用事件队列
-    ESP_ERROR_CHECK(uart_driver_install(UART_PORT_NUM, BUF_SIZE * 2, 0, 0, NULL, intr_alloc_flags));
+    //安装驱动程序, UART串口号为UART_PORT_NUM, 接收缓冲区大小为BUF_SIZE, 发送缓冲区大小为0, 不使用事件队列
+    ESP_ERROR_CHECK(uart_driver_install(UART_PORT_NUM, BUF_SIZE, 0, 0, NULL, intr_alloc_flags));
     //设置串口参数
     ESP_ERROR_CHECK(uart_param_config(UART_PORT_NUM, &uart_config));
     //设置串口引脚, 默认GPIO4为TXD, GPIO5为RXD, GPIO18为RTS, GPIO19为CTS
@@ -47,4 +47,8 @@ int serial_receive(int len, uint8_t PS_Databuffer[],uint16_t Timeout) {
 
 void serial_fulsh() {
     ESP_ERROR_CHECK(uart_flush(UART_PORT_NUM));
+}
+
+void serial_get_buffered_data_len(size_t *len) {
+     uart_get_buffered_data_len(UART_PORT_NUM, len);
 }

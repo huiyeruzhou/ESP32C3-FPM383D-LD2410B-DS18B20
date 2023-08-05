@@ -18,7 +18,7 @@
 #define GPIO_CTS (UART_PIN_NO_CHANGE)
 
 #define UART_PORT_NUM (UART_NUM_1)
-#define BUF_SIZE (1024)
+#define BUF_SIZE (512)
 
  //delay函数，单位ms
 #define delay(ms) vTaskDelay(pdMS_TO_TICKS((ms)))    
@@ -62,6 +62,12 @@ int serial_receive(int len, uint8_t PS_Databuffer[], uint16_t Timeout);
  * @return  None
  */
 void serial_fulsh();
+/**
+ * @brief   获取Rx缓冲区可用字节数
+ * @param   len: 用于存储可用字节数的指针
+ * @return  None
+ */
+void serial_get_buffered_data_len(size_t *len);
 
 #ifdef __cplusplus
 }
