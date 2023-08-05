@@ -113,6 +113,15 @@ public:
 	using erpc::Service::addMethod;
     virtual rpc_status update(sensor_Value *request, sensor_Empty *response);
 };
+class sensor_ControlDeviceService_Service : public erpc::Service {
+public:
+    sensor_ControlDeviceService_Service();
+    virtual ~sensor_ControlDeviceService_Service() {}
+	using erpc::Service::Service;
+	using erpc::Service::addMethod;
+    virtual rpc_status open(sensor_Empty *request, sensor_Empty *response);
+    virtual rpc_status close(sensor_Empty *request, sensor_Empty *response);
+};
 
 /* Client Defination */
 class sensor_SensorService_Client : public erpc::Client {
@@ -133,6 +142,15 @@ public:
 	using erpc::Client::open;
 	using erpc::Client::Client;
     virtual rpc_status update(sensor_Value *request, sensor_Empty *response);
+};
+class sensor_ControlDeviceService_Client : public erpc::Client {
+public:
+    sensor_ControlDeviceService_Client(const char *host, uint16_t port): erpc::Client(host, port) {}
+    virtual ~sensor_ControlDeviceService_Client() {}
+	using erpc::Client::open;
+	using erpc::Client::Client;
+    virtual rpc_status open(sensor_Empty *request, sensor_Empty *response);
+    virtual rpc_status close(sensor_Empty *request, sensor_Empty *response);
 };
 #ifdef __cplusplus
 } /* extern "C" */

@@ -24,5 +24,10 @@ service UpdateService
 {
     rpc update(Value) returns (Empty) {}
 }
+service ControlDeviceService 
+{
+    rpc open(Empty) returns (Empty) {}
+    rpc close(Empty) returns (Empty) {}
+}
 
 
