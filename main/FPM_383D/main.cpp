@@ -24,9 +24,7 @@
 #include "ability_conext.hpp"
 
 #include <sys/time.h>
-#define ESP_WIFI_SSID "testap"
-#define ESP_WIFI_PASS "testtest"
-#define ESP_MAXIMUM_RETRY 5
+#include "wifi_info.hpp"
 static const char *TAG = "DS18B20 Server";
 AbilityContext *speakerContext = NULL;
 

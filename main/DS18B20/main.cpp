@@ -26,9 +26,7 @@
 #include "ability_conext.hpp"
 
 #include <sys/time.h>
-#define ESP_WIFI_SSID "testap"
-#define ESP_WIFI_PASS "testtest"
-#define ESP_MAXIMUM_RETRY 5
+#include "wifi_info.hpp"
 static const char *TAG = "DS18B20 Server";
 AbilityContext *speakerContext = NULL;
 
@@ -65,15 +63,15 @@ static esp_err_t stop_webserver(httpd_handle_t server) {
 static void disconnect_handler(void *arg, esp_event_base_t event_base,
     int32_t event_id, void *event_data) {
     httpd_handle_t *server = (httpd_handle_t *) arg;
-    // if (*server) {
-    //     ESP_LOGI(TAG, "Stopping webserver: %p", *server);
-    //     if (stop_webserver(*server) == ESP_OK) {
-    //         *server = NULL;
-    //     }
-    //     else {
-    //         ESP_LOGE(TAG, "Failed to stop http server");
-    //     }
-    // }
+    if (*server) {
+        ESP_LOGI(TAG, "Stopping webserver: %p", *server);
+        if (stop_webserver(*server) == ESP_OK) {
+            *server = NULL;
+        }
+        else {
+            ESP_LOGE(TAG, "Failed to stop http server");
+        }
+    }
 }
 
 static void connect_handler(void *arg, esp_event_base_t event_base,
@@ -95,8 +93,12 @@ void stub(void *ctx) {
         speakerContext->getConnectPort()
     );
     updateClient->open();
+    TickType_t xLastWakeTime;
+    const TickType_t xDelay80ms = pdMS_TO_TICKS(80);
+    int fail_cnt = 0;
     //同步变量
     while (run) {
+        xLastWakeTime = xTaskGetTickCount();
         //传感器驱动，获取温度值
         temperature = get_temperature();
 
@@ -110,11 +112,18 @@ void stub(void *ctx) {
         //打印日志
         if (ret != rpc_status::Success) {
             ESP_LOGE(TAG, "Failed to update: T=%+06.1fC\n", value.value);
+            fail_cnt++;
         }
         else {
             ESP_LOGI(TAG, "Update success: T=%+06.1fC\n", value.value);
+            fail_cnt = 0;
         }
-        vTaskDelay(200 / portTICK_PERIOD_MS);
+        if (fail_cnt > 5) {
+            ESP_LOGE(TAG, "Failed more than 5 times, exit.");
+            run = false;
+            break;
+        }
+        vTaskDelayUntil(&xLastWakeTime, xDelay80ms);
     }
     //退出前释放资源
     delete updateClient;
@@ -170,12 +179,6 @@ extern "C" void app_main(void) {
         }
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
-            if (!run) {
-                rsp->status = 1;
-                rsp->value = -1;
-                ESP_LOGE(TAG, "Cannot read before open");
-                return rpc_status::Success;
-            }
             rsp->status = 0;
             // rsp->value = get_temperature();
             rsp->value = temperature;

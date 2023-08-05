@@ -35,9 +35,7 @@
 #include "ability_conext.hpp"
 
 #include <sys/time.h> 
-#define ESP_WIFI_SSID "TP-LINK_0163"
-#define ESP_WIFI_PASS "88539306"
-#define ESP_MAXIMUM_RETRY 5
+#include "wifi_info.hpp"
 AbilityContext *speakerContext = NULL;
 static const char *TAG = "LD2410B Server";
 
@@ -121,7 +119,7 @@ void stub(void *ctx) {
     );
     updateClient->open();
     TickType_t xLastWakeTime;
-    const TickType_t xDelay100ms = pdMS_TO_TICKS(80);
+    const TickType_t xDelay80ms = pdMS_TO_TICKS(80);
     getDistance(NULL);
     int fail_cnt = 0;
     //同步变量
@@ -162,7 +160,7 @@ void stub(void *ctx) {
             run = false;
             break;
         }
-        vTaskDelayUntil(&xLastWakeTime, xDelay100ms);
+        vTaskDelayUntil(&xLastWakeTime, xDelay80ms);
     }
     //退出前释放资源
     delete updateClient;
