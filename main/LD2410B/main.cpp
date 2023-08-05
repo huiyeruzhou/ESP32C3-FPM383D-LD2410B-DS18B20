@@ -34,9 +34,9 @@
 #include "handles.hpp"
 #include "ability_conext.hpp"
 
-#include <sys/time.h>
-#define ESP_WIFI_SSID "testap"
-#define ESP_WIFI_PASS "testtest"
+#include <sys/time.h> 
+#define ESP_WIFI_SSID "TP-LINK_0163"
+#define ESP_WIFI_PASS "88539306"
 #define ESP_MAXIMUM_RETRY 5
 AbilityContext *speakerContext = NULL;
 static const char *TAG = "LD2410B Server";
@@ -76,6 +76,7 @@ static void disconnect_handler(void *arg, esp_event_base_t event_base,
     int32_t event_id, void *event_data) {
     httpd_handle_t *server = (httpd_handle_t *) arg;
     if (*server) {
+        ESP_LOGI(TAG, "Stopping webserver, arg=: %p", arg);
         ESP_LOGI(TAG, "Stopping webserver: %p", *server);
         if (stop_webserver(*server) == ESP_OK) {
             *server = NULL;
@@ -120,10 +121,12 @@ void stub(void *ctx) {
     );
     updateClient->open();
     TickType_t xLastWakeTime;
-    const TickType_t xDelay150ms = pdMS_TO_TICKS(150);
-    xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xDelay100ms = pdMS_TO_TICKS(80);
+    getDistance(NULL);
+    int fail_cnt = 0;
     //同步变量
     while (run) {
+        xLastWakeTime = xTaskGetTickCount();
         //传感器驱动，获取距离和模式
         sensor_Value value;
         sensor_Empty empty;
@@ -147,12 +150,19 @@ void stub(void *ctx) {
         rpc_status ret = updateClient->update(&value, &empty);
         //打印日志
         if (ret != rpc_status::Success) {
-            ESP_LOGE(TAG, "Failed to update: Mode: %d, Distance: %d", mode, distance);
+            ESP_LOGE(TAG, "Failed to update: Mode: %d, Distance: %d, fail_cnt = %d", mode, distance, fail_cnt);
+            fail_cnt++;
         }
         else {
             ESP_LOGI(TAG, "Update success: Mode: %d, Distance: %d", mode, distance);
+            fail_cnt = 0;
         }
-        vTaskDelayUntil(&xLastWakeTime, xDelay150ms);
+        if (fail_cnt > 5) {
+            ESP_LOGE(TAG, "Failed more than 5 times, exit.");
+            run = false;
+            break;
+        }
+        vTaskDelayUntil(&xLastWakeTime, xDelay100ms);
     }
     //退出前释放资源
     delete updateClient;
@@ -228,16 +238,16 @@ extern "C" void app_main(void)
 
     //Initialize serial
     serial_init(256000);
-
-    create_broad_task((std::string(TAG) + std::string("+Idle,Stable+") +
-        std::to_string(std::time(nullptr))).c_str());
+    // const char *broadcast = (std::string(TAG) + std::string("+Idle,Stable+") +
+    //     std::to_string(std::time(nullptr))).c_str();
+    char* broadcast = (char*)malloc(128*sizeof(char));
+    snprintf(broadcast, 127,"%s+Idle,Stable+%lld", TAG, time(nullptr));
+    create_broad_task(broadcast);
 
 
     //Initialize RPC
     auto rpc_server = new erpc::SimpleServer("localhost", 12345);
     class myService :public sensor_SensorService_Service {
-    private:
-        bool start = false;
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
@@ -257,12 +267,6 @@ extern "C" void app_main(void)
         }
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
-            if (!start) {
-                rsp->status = 1;
-                rsp->value = -1;
-                ESP_LOGE(TAG, "Cannot read before open");
-                return rpc_status::Success;
-            }
             uint16_t distance = 0;
             int mode = getDistance(&distance);
             if (mode == 0xFF) {
@@ -302,8 +306,8 @@ extern "C" void app_main(void)
 
     server = start_webserver();
     // xTaskCreate(test_task, "test_task", 2048, NULL, 24, NULL);
-    // GPIO_Init();
-    // gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t)); //创建消息队列
-    // xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);//创建任务
+    GPIO_Init();
+    gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t)); //创建消息队列
+    xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);//创建任务
     return;
 }
