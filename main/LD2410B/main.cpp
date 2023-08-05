@@ -94,22 +94,7 @@ static void connect_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-std::atomic<uint16_t> originDistance;
-std::atomic<int> originMode;
 std::atomic <bool> run = false;
-void getDistanceStub(void *) {
-    while (run) {
-        //传感器驱动，获取距离和模式
-        uint16_t distance = 0;
-        int mode = getDistance(&distance);
-        originDistance = distance;
-        originMode = mode;
-        //打印日志
-        ESP_LOGI(TAG, "Mode: %d, Distance: %d", mode, distance);
-        taskYIELD();
-    }
-    vTaskDelete(NULL);
-}
 void stub(void *ctx) {
     //初始化：获取手机IP，Port，创建并打开RPC客户端
     AbilityContext *speakerContext = (AbilityContext *) ctx;
@@ -128,8 +113,6 @@ void stub(void *ctx) {
         //传感器驱动，获取距离和模式
         sensor_Value value;
         sensor_Empty empty;
-        // int mode = originMode;
-        // int distance = originDistance;
         uint16_t distance = 0;
         int mode = getDistance(&distance);
         // originDistance = distance;
