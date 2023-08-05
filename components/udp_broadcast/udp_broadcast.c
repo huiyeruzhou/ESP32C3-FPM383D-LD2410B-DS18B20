@@ -28,15 +28,14 @@ static void udp_broad_task(void *pvParameters)
 {
     
     /*广播内容*/
-    char *format_payload = "%s";
+    char *format_payload = "%s+%lld";
+    //要求pvParameters必须是动态分配的空间
     const char *message = (const char *) pvParameters;
     char payload[128];
-    int payload_length = snprintf(payload, sizeof(payload), format_payload, message);
-    free(pvParameters);
     while (1) {
         // addr_family = AF_INET;
         // ip_protocol = IPPROTO_IP;
-
+        
         /*创建UDP套接字*/
         struct sockaddr_in dest_addr;
         dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
@@ -57,7 +56,8 @@ static void udp_broad_task(void *pvParameters)
         ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, UDP_PORT);
         /*开始进行广播*/
         while (1) {
-            int err = sendto(sock, payload, payload_length, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            int payload_length = snprintf(payload, sizeof(payload), format_payload, message, time(NULL));
+            int err = sendto(sock, payload, payload_length, 0, (struct sockaddr *) &dest_addr, sizeof(dest_addr));
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                 break;
@@ -74,6 +74,7 @@ static void udp_broad_task(void *pvParameters)
             close(sock);
         }
     }
+    free(pvParameters);
     vTaskDelete(NULL);
 }
 /**

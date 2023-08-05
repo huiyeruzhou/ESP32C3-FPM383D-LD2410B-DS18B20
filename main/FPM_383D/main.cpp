@@ -105,8 +105,9 @@ extern "C" void app_main(void) {
     //Initialize serial
     serial_init(57600);
 
-    create_broad_task((std::string(TAG) + std::string("+Idle,Stable+") +
-        std::to_string(std::time(nullptr))).c_str());
+    char *broadcast = (char *) malloc(128 * sizeof(char));
+    snprintf(broadcast, 127, "%s+Idle,Stable", TAG);
+    create_broad_task(broadcast);
 
     //Initialize RPC
     auto rpc_server = new erpc::SimpleServer("localhost", 12345);

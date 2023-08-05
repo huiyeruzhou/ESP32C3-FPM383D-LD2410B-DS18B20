@@ -238,10 +238,8 @@ extern "C" void app_main(void)
 
     //Initialize serial
     serial_init(256000);
-    // const char *broadcast = (std::string(TAG) + std::string("+Idle,Stable+") +
-    //     std::to_string(std::time(nullptr))).c_str();
     char* broadcast = (char*)malloc(128*sizeof(char));
-    snprintf(broadcast, 127,"%s+Idle,Stable+%lld", TAG, time(nullptr));
+    snprintf(broadcast, 127,"%s+Idle,Stable", TAG);
     create_broad_task(broadcast);
 
 
