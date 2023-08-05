@@ -13,6 +13,7 @@
 #include <cstring>
 #include <string>
 #include <ctime>
+#include <atomic>
 #include "nvs_flash.h"
 
 #include "sdkconfig.h"
@@ -25,9 +26,10 @@
 
 #include <sys/time.h>
 #include "wifi_info.hpp"
-static const char *TAG = "DS18B20 Server";
+static const char *TAG = "FPM383D Server";
 AbilityContext *speakerContext = NULL;
-
+std::atomic <bool> run = false;
+std::atomic <float> limit = -1;
 
 static httpd_handle_t start_webserver(void) {
     httpd_handle_t server = NULL;
@@ -83,6 +85,77 @@ static void connect_handler(void *arg, esp_event_base_t event_base,
 }
 
 
+void stub(void *ctx) {
+    //初始化：获取手机IP，Port，创建并打开RPC客户端
+    AbilityContext *speakerContext = (AbilityContext *) ctx;
+    auto updateClient = new sensor_UpdateService_Client(
+        speakerContext->getConnectIP(),
+        speakerContext->getConnectPort()
+    );
+    updateClient->open();
+    TickType_t xLastWakeTime;
+    const TickType_t xDelay80ms = pdMS_TO_TICKS(80);
+    int fail_cnt = 0;
+    //同步变量
+    while (run) {
+        xLastWakeTime = xTaskGetTickCount();
+        //传感器驱动
+        sensor_Value value;
+        sensor_Empty empty;
+        uint16_t id = 0, score = 0;
+        int status = PS_SearchMB(&id, &score);
+        float local_limit = limit;
+        if (status) {
+            value.status = 2;
+            value.value = (float) id;
+            ESP_LOGE(TAG, "Failed to recognize finger, status=%d", status);
+            if (status == 0x00000008) {
+                ESP_LOGE(TAG, "Finger not found, timeout.");
+                continue;
+            }
+        }
+        else if (id == 0xFFFF) {
+            value.status = 3;
+            ESP_LOGW(TAG, "Macth Failed, score=%d", score);
+            value.value = (float) id;
+        }
+        else {
+            ESP_LOGW(TAG, "id=%d, score=%d", id, score);
+            if (local_limit < 0 || score > local_limit) {
+                value.status = 0;
+                value.value = (float) id;
+            }
+            else {
+                value.status = 4;
+                value.value = (float) id;
+                ESP_LOGE(TAG, "Score too low, limit=%f", local_limit);
+            }
+        }
+
+        //调用RPC
+        rpc_status ret = updateClient->update(&value, &empty);
+        
+        //打印日志
+        if (ret != rpc_status::Success) {
+            ESP_LOGE(TAG, "Failed to update: id = %d, score = %d, limit=%f", id, score, local_limit);
+            fail_cnt++;
+        }
+        else {
+            ESP_LOGI(TAG, "Update success: id = %d, score = %d, limit=%f", id, score, local_limit);
+            fail_cnt = 0;
+        }
+        if (fail_cnt > 5) {
+            ESP_LOGE(TAG, "Failed more than 5 times, exit.");
+            run = false;
+            break;
+        }
+        vTaskDelayUntil(&xLastWakeTime, xDelay80ms);
+    }
+    //退出前释放资源
+    delete updateClient;
+    vTaskDelete(NULL);
+}
+
 extern "C" void app_main(void) {
     static httpd_handle_t server = NULL;
     printf("Hello world!\n");
@@ -110,31 +183,27 @@ extern "C" void app_main(void) {
     //Initialize RPC
     auto rpc_server = new erpc::SimpleServer("localhost", 12345);
     class myService :public sensor_SensorService_Service {
-    private:
-        bool start = false;
-        float limit = -1;
     public:
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "open");
-            start = true;
+            if (!run) {
+                run = true;
+                xTaskCreate(stub, "serial", 4096, speakerContext, 3, NULL);
+                // xTaskCreate(getDistanceStub, "LD2410B serial", 4096, NULL, 1, NULL);
+            }
             return rpc_status::Success;
         }
         rpc_status close(sensor_Empty *req, sensor_Empty *rsp) override {
             ESP_LOGI(TAG, "close");
-            if (start) {
-                start = false;
+            if (run) {
+                run = false;
             }
             return rpc_status::Success;
         }
         rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
             ESP_LOGI(TAG, "read");
-            if (!start) {
-                rsp->status = 1;
-                rsp->value = -1;
-                ESP_LOGE(TAG, "Cannot read before open");
-                return rpc_status::Success;
-            }
             uint16_t id = 0, score = 0;
+            float local_limit = limit;
             int status = PS_SearchMB(&id, &score);
             if (status) {
                 rsp->status = 2;
@@ -155,7 +224,7 @@ extern "C" void app_main(void) {
                 else {
                     rsp->status = 4;
                     rsp->value = (float) id;
-                    ESP_LOGE(TAG, "Score too low, limit=%f", limit);
+                    ESP_LOGE(TAG, "Score too low, limit=%f", local_limit);
                 }
             }
             return rpc_status::Success;
