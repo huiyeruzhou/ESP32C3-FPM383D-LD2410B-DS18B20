@@ -71,7 +71,7 @@ static esp_err_t stop_webserver(httpd_handle_t server) {
 
 static void disconnect_handler(void *arg, esp_event_base_t event_base,
                                int32_t event_id, void *event_data) {
-  // httpd_handle_t *server = (httpd_handle_t *) arg;
+  // httpd_handle_t *server = reinterpret_cast<httpd_handle_t *> (arg);
   // if (*server) {
   //     ESP_LOGI(TAG, "Stopping webserver, arg=: %p", arg);
   //     ESP_LOGI(TAG, "Stopping webserver: %p", *server);
