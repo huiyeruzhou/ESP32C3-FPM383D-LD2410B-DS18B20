@@ -1,6 +1,6 @@
 {
   "C_Cpp.intelliSenseEngine": "Tag Parser",
-  "idf.port": "/dev/ttyUSB1",
+  "idf.port": "/dev/ttyUSB0",
   "idf.adapterTargetName": "esp32c3",
   "files.associations": {
     "*.c": "c",
@@ -97,5 +97,17 @@
     "typeindex": "cpp",
     "valarray": "cpp",
     "cfloat": "cpp"
-  }
+  },
+  "C_Cpp.clang_format_path": "",
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "C_Cpp.clang_format_style": "Google",
+  "C_Cpp.formatting": "clangFormat",
+  "cpplint.lintMode": "single",
+  "cpplint.excludes": [
+    "build/*.*",
+  ],
+  "cpplint.filters": [
+    "-build/include_subdir",
+    "-legal/copyright"
+  ]
 }
