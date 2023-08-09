@@ -20,7 +20,7 @@ uint8_t PS_SearchMB(uint16_t *id, uint16_t *score) {
   serial_send(size(PS_SearchMBBuffer), PS_SearchMBBuffer);
   ESP_LOGI(TAG, "receiving");
   /*接收匹配结果*/
-  int recvd = serial_receive(28, PS_ReceiveBuffer, 5000);
+  int recvd = serial_receive(28, PS_ReceiveBuffer, 3000);
   if (recvd == 0) {
     ESP_LOGI(TAG, "failed to receive");
     if (id) *id = 0xFFFF;

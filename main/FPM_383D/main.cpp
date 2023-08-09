@@ -105,9 +105,9 @@ void stub(void *ctx) {
       value.status = 2;
       value.value = static_cast<float>(id);
       ESP_LOGE(TAG, "Failed to recognize finger, status=%d", status);
-      if (status == 0x00000008) {
+      if (status == 0x00000008 || 0xFF) {
         ESP_LOGE(TAG, "Finger not found, timeout.");
-        continue;
+        value.value = 0.0 / 0.0;
       }
     } else if (id == 0xFFFF) {
       value.status = 3;
@@ -242,9 +242,7 @@ extern "C" void app_main(void) {
                                       "\"description\" : \"海陵科 指纹传感器\""
                                       "}]}",
 
-                                      rpc_server
-
-  );
+                                      rpc_server);
 
   server = start_webserver();
 
