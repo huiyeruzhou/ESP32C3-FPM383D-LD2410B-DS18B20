@@ -208,13 +208,17 @@ extern "C" void app_main(void) {
         rsp->status = 2;
         rsp->value = static_cast<float>(id);
         ESP_LOGE(TAG, "Failed to recognize finger, status=%d", status);
+        if (status == 0x00000008 || 0xFF) {
+          ESP_LOGE(TAG, "Finger not found, timeout.");
+          rsp->value = 0.0 / 0.0;
+        }
       } else if (id == 0xFFFF) {
         rsp->status = 3;
         ESP_LOGW(TAG, "Macth Failed, score=%d", score);
         rsp->value = static_cast<float>(id);
       } else {
         ESP_LOGW(TAG, "id=%d, score=%d", id, score);
-        if (limit < 0 || score > limit) {
+        if (local_limit < 0 || score > local_limit) {
           rsp->status = 0;
           rsp->value = static_cast<float>(id);
         } else {

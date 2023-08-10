@@ -119,7 +119,7 @@ void stub(void *ctx) {
       value.value = -1;
     } else {
       ESP_LOGI(TAG, "Mode: %d, Distance: %d", mode, distance);
-      value.value = reinterpret_cast<float>(distance);
+      value.value = static_cast<float>(distance);
       value.status = 0;
     }
 
@@ -243,7 +243,7 @@ extern "C" void app_main(void) {
       }
       ESP_LOGI(TAG, "Mode: %d, Distance: %d", mode, distance);
       rsp->status = 0;
-      rsp->value = reinterpret_cast<float>(distance);
+      rsp->value = static_cast<float>(distance);
       return rpc_status::Success;
     }
     rpc_status configure(sensor_Value *req, sensor_Empty *rsp) override {

@@ -183,8 +183,7 @@ extern "C" void app_main(void) {
     rpc_status read(sensor_Empty *req, sensor_Value *rsp) override {
       ESP_LOGI(TAG, "read");
       rsp->status = 0;
-      // rsp->value = get_temperature();
-      rsp->value = temperature;
+      rsp->value = get_temperature();
       if (config_int) {
         rsp->value = static_cast<int>(rsp->value);
       }
