@@ -258,7 +258,7 @@ extern "C" void app_main(void) {
   auto service = new myService();
   rpc_server->addService(service);
 
-  speakerContext = new AbilityContext("LD18B20-DistanceRadar",
+  speakerContext = new AbilityContext("LD2410B-DistanceRadar",
 
                                       "{\"distanceSensors\": "
                                       "[{"

@@ -27,22 +27,21 @@ uint8_t getDistance(uint16_t *distance) {
     return 0xFF;
   }
   /*查找帧头*/
-  // int head = -1;
-  // for (int i = 0; i < len; i++) {
-  //     if (PS_ReceiveBuffer[i] == 0xF4 && PS_ReceiveBuffer[i + 1] == 0xF3 &&
-  //     PS_ReceiveBuffer[i + 2] == 0xF2 && PS_ReceiveBuffer[i + 3] == 0xF1) {
-  //         head = i;
-  //         printf("帧头位于第%d个字节\n", i);
-  //         break;
-  //     }
-  // }
-  // /*没有找到帧头,报错*/
-  // if (head == -1) {
-  //     *distance = 0;
-  //     return 0xFF;
-  // }
+  int head = -1;
+  for (int i = 0; i < len; i++) {
+      if (PS_ReceiveBuffer[i] == 0xF4 && PS_ReceiveBuffer[i + 1] == 0xF3 &&
+      PS_ReceiveBuffer[i + 2] == 0xF2 && PS_ReceiveBuffer[i + 3] == 0xF1) {
+          head = i;
+          printf("帧头位于第%d个字节\n", i);
+          break;
+      }
+  }
+  /*没有找到帧头,报错*/
+  if (head == -1) {
+      *distance = 0;
+      return 0xFF;
+  }
   /*打印帧数据*/
-  int head = 0;
   for (int i = head; i < 23 + head; i++) {
     printf("%02X ", PS_ReceiveBuffer[i]);
   }

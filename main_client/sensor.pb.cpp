@@ -38,35 +38,35 @@ sensor_SensorService_Service::sensor_SensorService_Service() {
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_SensorService_method_names[0], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->open(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_SensorService_method_names[1], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->close(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
        addMethod(new erpc::Method<sensor_Empty, sensor_Value>(
                sensor_SensorService_method_names[2], sensor_Empty_fields, sensor_Value_fields,
                [](Service *s, sensor_Empty *i, sensor_Value *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->read(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
        addMethod(new erpc::Method<sensor_Value, sensor_Empty>(
                sensor_SensorService_method_names[3], sensor_Value_fields, sensor_Empty_fields,
                [](Service *s, sensor_Value *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->configure(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
 }
 sensor_UpdateService_Service::sensor_UpdateService_Service() {
        addMethod(new erpc::Method<sensor_Value, sensor_Empty>(
                sensor_UpdateService_method_names[0], sensor_Value_fields, sensor_Empty_fields,
                [](Service *s, sensor_Value *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_UpdateService_Service*>(s)->update(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
 }
 sensor_ControlDeviceService_Service::sensor_ControlDeviceService_Service() {
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_ControlDeviceService_method_names[0], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_ControlDeviceService_Service*>(s)->open(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_ControlDeviceService_method_names[1], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_ControlDeviceService_Service*>(s)->close(i, o);},
-               this));
+               std::shared_ptr<erpc::Service>(this)));
 }
 /* Server stub */
 rpc_status sensor_SensorService_Service::open(sensor_Empty *req, sensor_Empty *rsp) {

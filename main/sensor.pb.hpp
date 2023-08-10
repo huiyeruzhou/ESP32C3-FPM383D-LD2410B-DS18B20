@@ -4,12 +4,14 @@
 #ifndef PB_SENSOR_SENSOR_PB_HPP_INCLUDED
 #define PB_SENSOR_SENSOR_PB_HPP_INCLUDED
 #include <pb.h>
-#include <server/service.hpp>
-#include <client/rpc_client.hpp>
 #include <rpc_status.hpp>
 #include <pb_encode.h>
 #include <pb_decode.h>
+#include <memory>
 #include <functional>
+#include <server/service.hpp>
+#include <client/rpc_client.hpp>
+#include <server/simple_server.hpp>
 
 #if PB_PROTO_HEADER_VERSION != 40
 #error Regenerate this file with the current version of nanopb generator.
