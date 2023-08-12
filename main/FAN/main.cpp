@@ -146,8 +146,10 @@ extern "C" void app_main(void) {
               NULL);  // 创建任务
 
   // Initialize Broadcast
-  char *broadcast = reinterpret_cast<char *>(malloc(128 * sizeof(char)));
-  snprintf(broadcast, sizeof(broadcast), "%s+Idle,Stable", TAG);
+  int max_len = 127;
+  char *broadcast =
+      reinterpret_cast<char *>(malloc((max_len + 1) * sizeof(char)));
+  snprintf(broadcast, max_len, "%s+Idle,Stable", TAG);
   create_broad_task(broadcast);
 
   // Initialize RPC
@@ -168,6 +170,10 @@ extern "C" void app_main(void) {
         run = false;
         gpio_set_level(CONFIG_GPIO_NUM, 0);
       }
+      return rpc_status::Success;
+    }
+    rpc_status ping(sensor_Empty *req, sensor_Empty *rsp) override {
+      ESP_LOGI(TAG, "ping");
       return rpc_status::Success;
     }
   };

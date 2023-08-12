@@ -19,6 +19,7 @@ service SensorService
     rpc close(Empty) returns (Empty) {}
     rpc read(Empty) returns (Value) {}
     rpc configure(Value) returns (Empty) {}
+    rpc ping(Empty) returns (Empty) {}
 }
 service UpdateService 
 {
@@ -28,6 +29,7 @@ service ControlDeviceService
 {
     rpc open(Empty) returns (Empty) {}
     rpc close(Empty) returns (Empty) {}
+    rpc ping(Empty) returns (Empty) {}
 }
 
 

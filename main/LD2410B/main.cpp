@@ -254,6 +254,10 @@ extern "C" void app_main(void) {
       stopConfigure();
       return rpc_status::Success;
     }
+    rpc_status ping(sensor_Empty *req, sensor_Empty *rsp) override {
+      ESP_LOGI(TAG, "ping");
+      return rpc_status::Success;
+    }
   };
   auto service = new myService();
   rpc_server->addService(service);

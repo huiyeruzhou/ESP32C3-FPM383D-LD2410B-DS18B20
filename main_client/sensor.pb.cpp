@@ -25,6 +25,7 @@ static const char* sensor_SensorService_method_names[] = {
     "/sensor.SensorService/close",
     "/sensor.SensorService/read",
     "/sensor.SensorService/configure",
+    "/sensor.SensorService/ping",
 };
 static const char* sensor_UpdateService_method_names[] = {
     "/sensor.UpdateService/update",
@@ -32,41 +33,53 @@ static const char* sensor_UpdateService_method_names[] = {
 static const char* sensor_ControlDeviceService_method_names[] = {
     "/sensor.ControlDeviceService/open",
     "/sensor.ControlDeviceService/close",
+    "/sensor.ControlDeviceService/ping",
 };
 /* Method Registration */
 sensor_SensorService_Service::sensor_SensorService_Service() {
+    auto self = std::shared_ptr<Service>(this);
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_SensorService_method_names[0], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->open(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_SensorService_method_names[1], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->close(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
        addMethod(new erpc::Method<sensor_Empty, sensor_Value>(
                sensor_SensorService_method_names[2], sensor_Empty_fields, sensor_Value_fields,
                [](Service *s, sensor_Empty *i, sensor_Value *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->read(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
        addMethod(new erpc::Method<sensor_Value, sensor_Empty>(
                sensor_SensorService_method_names[3], sensor_Value_fields, sensor_Empty_fields,
                [](Service *s, sensor_Value *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->configure(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
+       addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
+               sensor_SensorService_method_names[4], sensor_Empty_fields, sensor_Empty_fields,
+               [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_SensorService_Service*>(s)->ping(i, o);},
+               self));
 }
 sensor_UpdateService_Service::sensor_UpdateService_Service() {
+    auto self = std::shared_ptr<Service>(this);
        addMethod(new erpc::Method<sensor_Value, sensor_Empty>(
                sensor_UpdateService_method_names[0], sensor_Value_fields, sensor_Empty_fields,
                [](Service *s, sensor_Value *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_UpdateService_Service*>(s)->update(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
 }
 sensor_ControlDeviceService_Service::sensor_ControlDeviceService_Service() {
+    auto self = std::shared_ptr<Service>(this);
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_ControlDeviceService_method_names[0], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_ControlDeviceService_Service*>(s)->open(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
        addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
                sensor_ControlDeviceService_method_names[1], sensor_Empty_fields, sensor_Empty_fields,
                [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_ControlDeviceService_Service*>(s)->close(i, o);},
-               std::shared_ptr<erpc::Service>(this)));
+               self));
+       addMethod(new erpc::Method<sensor_Empty, sensor_Empty>(
+               sensor_ControlDeviceService_method_names[2], sensor_Empty_fields, sensor_Empty_fields,
+               [](Service *s, sensor_Empty *i, sensor_Empty *o)->rpc_status {return reinterpret_cast<sensor_ControlDeviceService_Service*>(s)->ping(i, o);},
+               self));
 }
 /* Server stub */
 rpc_status sensor_SensorService_Service::open(sensor_Empty *req, sensor_Empty *rsp) {
@@ -89,6 +102,11 @@ rpc_status sensor_SensorService_Service::configure(sensor_Value *req, sensor_Emp
     return rpc_status::UnimplmentedService;
 }
 
+rpc_status sensor_SensorService_Service::ping(sensor_Empty *req, sensor_Empty *rsp) {
+    LOGW(sensor_SensorService_method_names[4], "Service Unimplemented!");
+    return rpc_status::UnimplmentedService;
+}
+
 rpc_status sensor_UpdateService_Service::update(sensor_Value *req, sensor_Empty *rsp) {
     LOGW(sensor_UpdateService_method_names[0], "Service Unimplemented!");
     return rpc_status::UnimplmentedService;
@@ -101,6 +119,11 @@ rpc_status sensor_ControlDeviceService_Service::open(sensor_Empty *req, sensor_E
 
 rpc_status sensor_ControlDeviceService_Service::close(sensor_Empty *req, sensor_Empty *rsp) {
     LOGW(sensor_ControlDeviceService_method_names[1], "Service Unimplemented!");
+    return rpc_status::UnimplmentedService;
+}
+
+rpc_status sensor_ControlDeviceService_Service::ping(sensor_Empty *req, sensor_Empty *rsp) {
+    LOGW(sensor_ControlDeviceService_method_names[2], "Service Unimplemented!");
     return rpc_status::UnimplmentedService;
 }
 
@@ -122,6 +145,10 @@ rpc_status sensor_SensorService_Client::configure(sensor_Value *req, sensor_Empt
     return performRequest(const_cast<char *>(sensor_SensorService_method_names[3]), sensor_Value_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
 }
 
+rpc_status sensor_SensorService_Client::ping(sensor_Empty *req, sensor_Empty *rsp) {
+    return performRequest(const_cast<char *>(sensor_SensorService_method_names[4]), sensor_Empty_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
+}
+
 rpc_status sensor_UpdateService_Client::update(sensor_Value *req, sensor_Empty *rsp) {
     return performRequest(const_cast<char *>(sensor_UpdateService_method_names[0]), sensor_Value_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
 }
@@ -132,5 +159,9 @@ rpc_status sensor_ControlDeviceService_Client::open(sensor_Empty *req, sensor_Em
 
 rpc_status sensor_ControlDeviceService_Client::close(sensor_Empty *req, sensor_Empty *rsp) {
     return performRequest(const_cast<char *>(sensor_ControlDeviceService_method_names[1]), sensor_Empty_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
+}
+
+rpc_status sensor_ControlDeviceService_Client::ping(sensor_Empty *req, sensor_Empty *rsp) {
+    return performRequest(const_cast<char *>(sensor_ControlDeviceService_method_names[2]), sensor_Empty_fields, (void *) req, sensor_Empty_fields, (void *) rsp);
 }
 
