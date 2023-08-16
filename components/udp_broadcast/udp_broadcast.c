@@ -72,6 +72,8 @@ static void udp_broad_task(void *pvParameters) {
       shutdown(sock, 0);
       close(sock);
     }
+    /*4s尝试一次重建套接字*/
+    vTaskDelay(4000 / portTICK_PERIOD_MS);
   }
   free(pvParameters);
   vTaskDelete(NULL);

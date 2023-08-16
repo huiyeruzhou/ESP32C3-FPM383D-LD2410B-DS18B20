@@ -164,10 +164,10 @@ extern "C" void app_main(void) {
   esp_netif_t *sta_netif = wifi_init_sta();
 
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
-      IP_EVENT, IP_EVENT_STA_GOT_IP, &connect_handler, sta_netif, &server));
+      IP_EVENT, IP_EVENT_STA_GOT_IP, &connect_handler, &server, NULL));
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
-      WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, sta_netif,
-      &server));
+      WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, &server,
+      NULL));
   ESP_LOGI(TAG, "wifi start");
   wifi_start_and_connect(sta_netif, ESP_WIFI_SSID, ESP_WIFI_PASS);
 

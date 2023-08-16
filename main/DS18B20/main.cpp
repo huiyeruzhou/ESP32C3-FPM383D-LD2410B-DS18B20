@@ -62,16 +62,15 @@ static esp_err_t stop_webserver(httpd_handle_t server) {
 
 static void disconnect_handler(void *arg, esp_event_base_t event_base,
                                int32_t event_id, void *event_data) {
-  // httpd_handle_t *server = (httpd_handle_t *) arg;
-  // if (*server) {
-  //     ESP_LOGI(TAG, "Stopping webserver: %p", *server);
-  //     if (stop_webserver(*server) == ESP_OK) {
-  //         *server = NULL;
-  //     }
-  //     else {
-  //         ESP_LOGE(TAG, "Failed to stop http server");
-  //     }
-  // }
+  httpd_handle_t *server = reinterpret_cast<httpd_handle_t *>(arg);
+  if (*server) {
+    ESP_LOGI(TAG, "Stopping webserver: %p", *server);
+    if (stop_webserver(*server) == ESP_OK) {
+      *server = NULL;
+    } else {
+      ESP_LOGE(TAG, "Failed to stop http server");
+    }
+  }
 }
 
 static void connect_handler(void *arg, esp_event_base_t event_base,
@@ -140,10 +139,10 @@ extern "C" void app_main(void) {
   esp_netif_t *sta_netif = wifi_init_sta();
 
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
-      IP_EVENT, IP_EVENT_STA_GOT_IP, &connect_handler, sta_netif, &server));
+      IP_EVENT, IP_EVENT_STA_GOT_IP, &connect_handler, &server, NULL));
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
-      WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, sta_netif,
-      &server));
+      WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, &server,
+      NULL));
   ESP_LOGI(TAG, "wifi start");
   wifi_start_and_connect(sta_netif, ESP_WIFI_SSID, ESP_WIFI_PASS);
 

@@ -103,7 +103,7 @@ esp_netif_t *wifi_init_sta() {
 
   return sta_netif;
 }
-void wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid,
+bool wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid,
                             const char *password) {
   wifi_config_t wifi_config = {
       .sta = {
@@ -144,10 +144,13 @@ void wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid,
    * can test which event actually happened. */
   if (bits & WIFI_CONNECTED_BIT) {
     ESP_LOGI(TAG, "connected to ap SSID:%s password:%s", ssid, password);
+    return true;
   } else if (bits & WIFI_FAIL_BIT) {
     ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s", ssid, password);
+    return false;
   } else {
     ESP_LOGE(TAG, "UNEXPECTED EVENT");
+    return false;
   }
 
   /* The event will not be processed after unregister */
