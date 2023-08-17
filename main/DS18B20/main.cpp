@@ -91,7 +91,7 @@ void stub(void *ctx) {
       speakerContext->getConnectIP(), speakerContext->getConnectPort());
   updateClient->open();
   TickType_t xLastWakeTime;
-  const TickType_t xDelay80ms = pdMS_TO_TICKS(80);
+  const TickType_t xDelay = pdMS_TO_TICKS(400);
   int fail_cnt = 0;
   // 同步变量
   while (run) {
@@ -119,7 +119,7 @@ void stub(void *ctx) {
       run = false;
       break;
     }
-    vTaskDelayUntil(&xLastWakeTime, xDelay80ms);
+    vTaskDelayUntil(&xLastWakeTime, xDelay);
   }
   // 退出前释放资源
   delete updateClient;
