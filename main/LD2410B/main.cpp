@@ -79,6 +79,7 @@ static void disconnect_handler(void *arg, esp_event_base_t event_base,
       ESP_LOGE(TAG, "Failed to stop http server");
     }
   }
+  esp_restart();
 }
 
 static void connect_handler(void *arg, esp_event_base_t event_base,
