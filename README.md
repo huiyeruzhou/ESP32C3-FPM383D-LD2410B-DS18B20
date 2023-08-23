@@ -19,9 +19,19 @@
 │   ├── DS18B20           #温度传感器
 │   ├── FPM_383D          #指纹传感器
 │   ├── LD2410B           #雷达传感器
+│   ├── CMakeLists.txt    #项目配置文件
+│   └── wifi_info.hpp     #wifi配置文件
 └── main_client     #Linux测测试客户端代码
 ```
 
+## 关于项目
+- 代码整体是一个ESP32C3的ESP-IDF项目,其中main文件夹下包含四个子文件夹是三个传感器/一个风扇设备的Demo,每个Demo都是一个独立的ESP-IDF项目,可以单独编译和烧录.要切换烧录何种项目, 请在main/CMakeLists.txt中修改`set(program LD2410B)`为对应的子文件夹名, 例如要运行指纹传感器就改为`set(program FPM_383D)`
+- 在使用代码前, 请确保使用递归克隆将myrpc和nanopb仓库克隆完毕.
+- 在使用代码前, 需要使用nanopb生成pb文件.可以切换到main_client目录下, 运行`make`命令, 并将生成的sensor.pb.cpp和sensor.pb.hpp复制到main目录下.或者在main文件夹下使用如下命令 `../components/myrpc/nanopb/generator/protoc --nanopb_out=. -I../main_client sensor.proto`
+- 在编译之前, 请先在wifi_info.hpp中填好对应的WIFI信息
+- 然后, 可以尝试编译.如果是使用命令行环境而非VSCode插件, 请先运行`idf.py menuconfig`以生成对应的配置文件, 然后再运行`idf.py build`编译.
+- 如果要使用main_client中的测试代码, 需要用其他工具(如curl)发送对应的http请求拉起能力.例如:`curl.exe --location --request POST 'http://192.168.111.137:8080/api/AbilityRequest?port=1&abilityName=DS18B20-Temperature&cmd=start&connectIP=127.0.0.1&connectPort=12345'`
+  
 ## 运行项目代码
 
 ### FPM-383D指纹传感器

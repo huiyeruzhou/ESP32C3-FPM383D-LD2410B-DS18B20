@@ -1,16 +1,16 @@
-#pragma once
-/**
- * This is an example which echos any data it receives on configured UART back
- * to the sender, with hardware flow control turned off. It does not use UART
- * driver event queue.
+/*
+ * Copyright 2023 YuHongli
  *
- * - Port: configured UART
- * - Receive (Rx) buffer: on
- * - Transmit (Tx) buffer: off
- * - Flow control: off
- * - Event queue: off
- * - Pin assignment: see defines below (See Kconfig)
+ * File: serial.h
+ * Description: serial driver
+ * Version: V1.0.0
+ * Date: 2023/08/23
+ * Author: YuHongli
+ * Revision History:
+ *   Version       Date          Author         Revision Description
+ *  V1.0.0        2023/08/23    YuHongli       Create and initialize
  */
+#pragma once
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #define GPIO_TXD (GPIO_NUM_4)
@@ -28,47 +28,41 @@
 extern "C" {
 #endif
 /**
- * @brief  串口初始化函数
- * @param  buard_rate: 波特率
+ * @brief  init serial
+ * @param  buard_rate: buard rate
  * @return None
  */
 void serial_init(int buard_rate);
 
 /**
- *  @brief  获取串口可用字节数
- *  @return 可用字节数
+ *  @brief  get number of bytes in Rx buffer
+ *  @return available bytes
  */
 int serial_available();
 
 /**
- * @brief   串口发送函数
- * @param   len: 发送数组长度
- * @param   PS_Databuffer[]: 需要发送的功能数组
+ * @brief   send data to serial
+ * @param   len: length of data
+ * @param   PS_Databuffer[]: data to send
  * @return  None
  */
 void serial_send(int len, uint8_t PS_Databuffer[]);
 
 /**
- * @brief   串口接收函数,尝试接收len个数据到PS_Databuffer中，最多阻塞Timeout毫秒
- * @param   len: 接收数据长度, 注意不是接收数组的长度
- * @param   PS_Databuffer[]: 接收数组
- * @param   Timeout：接收超时时间,单位毫秒
- * @return  实际接收的字节数
+ * @brief   receive data from serial
+ * @param   len: length of data to receive
+ * @param   PS_Databuffer[]: buffer to store data
+ * @param   Timeout：timeout in ms
+ * @return  number of bytes received
  */
 int serial_receive(int len, uint8_t PS_Databuffer[], uint16_t Timeout);
 
 /**
- * @brief   清空Rx缓冲区
+ * @brief   flush Rx buffer
  * @param   None
  * @return  None
  */
 void serial_fulsh();
-/**
- * @brief   获取Rx缓冲区可用字节数
- * @param   len: 用于存储可用字节数的指针
- * @return  None
- */
-void serial_get_buffered_data_len(size_t *len);
 
 #ifdef __cplusplus
 }

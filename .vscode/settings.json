@@ -96,11 +96,12 @@
     "cfenv": "cpp",
     "typeindex": "cpp",
     "valarray": "cpp",
-    "cfloat": "cpp"
+    "cfloat": "cpp",
+    "gpio.h": "c"
   },
   "C_Cpp.clang_format_path": "",
   "C_Cpp.clang_format_fallbackStyle": "Google",
-  "C_Cpp.clang_format_style": "Google",
+  "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, ColumnLimit: 150, BreakBeforeBraces: WebKit, IndentCaseLabels: true}",
   "C_Cpp.formatting": "clangFormat",
   "cpplint.lintMode": "single",
   "cpplint.excludes": [

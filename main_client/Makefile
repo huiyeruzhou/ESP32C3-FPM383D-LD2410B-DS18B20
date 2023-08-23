@@ -36,6 +36,10 @@ else
 	endif
 endif
 
+#########################################################
+# end
+#########################################################
+
 # Rule for building .pb.c and .pb.h
 %.pb.cpp %.pb.hpp: %.proto %.options
 	$(PROTOC) $(PROTOC_OPTS) --nanopb_out=. $<
@@ -45,7 +49,8 @@ endif
 
 # Compiler flags to enable all warnings & debug info
 CFLAGS = -Wall -Werror -g -O0
-CXXFLAGS += "-I$(NANOPB_DIR)" -I$(ERPC_ROOT)/include -g -lpthread
+CXXFLAGS += "-I$(NANOPB_DIR)" -I$(ERPC_ROOT)/include -g -Wall -Werror -lpthread
+# please build the library first
 ERPC_LIB=$(ERPC_ROOT)/Debug/Linux/erpc/lib/liberpc.a
 
 .PHONY: all clean

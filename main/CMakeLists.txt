@@ -1,4 +1,4 @@
-set(program FAN)
+set(program LD2410B)
 file(GLOB_RECURSE SRCS
         ${program}/*.cpp
         ${program}/*.c

@@ -1,3 +1,15 @@
+/*
+ * Copyright 2023 YuHongli
+ *
+ * File: config_wifi.h
+ * Description: the wifi config header
+ * Version: V1.0.0
+ * Date: 2023/08/23
+ * Author: YuHongli
+ * Revision History:
+ *   Version       Date          Author         Revision Description
+ *  V1.0.0        2023/08/23    YuHongli       Create and initialize
+ */
 #ifndef _CONFIG_WIFI_H_
 #define _CONFIG_WIFI_H_
 #include <netdb.h>
@@ -24,8 +36,7 @@ extern "C" {
 #endif  // __cplusplus
 void ip_set(const char *ip, const char *mask, const char *gw);
 esp_netif_t *wifi_init_sta();
-bool wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid,
-                            const char *password);
+bool wifi_start_and_connect(esp_netif_t *sta_netif, const char *ssid, const char *password);
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
