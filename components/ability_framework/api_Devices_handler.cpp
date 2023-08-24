@@ -1,19 +1,19 @@
 /*
- * Copyright 2023 YuHongli
+ * Copyright (C), 2022-2023, Soochow University & OPPO Mobile Comm Corp., Ltd.
  *
  * File: api_Devices_handler.cpp
  * Description: the devices http-handler
  * Version: V1.0.0
  * Date: 2023/08/23
- * Author: YuHongli
+ * Author: Soochow University
  * Revision History:
  *   Version       Date          Author         Revision Description
- *  V1.0.0        2023/08/23    YuHongli       Create and initialize
+ *  V1.0.0        2023/08/23    Soochow University       Create and initialize
  */
 #include "ability_conext.hpp"
 #include "handler_common.hpp"
 
-static const char *TAG = "API_DEVICES_HANDLER";
+#define TAG "API_DEVICES_HANDLER"
 
 /* An HTTP GET handler */
 esp_err_t api_Devices_handler(httpd_req_t *req)
