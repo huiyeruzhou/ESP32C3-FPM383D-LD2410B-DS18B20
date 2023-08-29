@@ -6,7 +6,6 @@ NANOPB_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))../components/myrpc/n
 ERPC_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))../components/myrpc)
 # C source code files that are required
 NAME = sensor
-SRC  += server.cpp $(NAME).pb.cpp ${NANOPB_CORE}            # The main program
 CRC  += client.cpp $(NAME).pb.cpp ${NANOPB_CORE}            # The main program
 #########################################################
 # leave following lines unchanged
@@ -54,7 +53,7 @@ CXXFLAGS += "-I$(NANOPB_DIR)" -I$(ERPC_ROOT)/include -g -Wall -Werror -lpthread
 ERPC_LIB=$(ERPC_ROOT)/Debug/Linux/erpc/lib/liberpc.a
 
 .PHONY: all clean
-all: server client
+all: client
 clean:
 	rm -f server client *.pb.cpp *.pb.hpp
 # Build rule for the main program

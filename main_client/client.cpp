@@ -9,7 +9,6 @@ static sensor_SensorService_Client *client;
 void read(int sensor)
 {
     sensor_Empty empty;
-    sensor_Status status;
     sensor_Value value;
     client->read(&empty, &value);
 
