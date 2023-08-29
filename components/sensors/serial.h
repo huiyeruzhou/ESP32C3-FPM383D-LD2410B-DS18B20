@@ -21,7 +21,6 @@
 #define UART_PORT_NUM (UART_NUM_1)
 #define BUF_SIZE (512)
 
-// delay函数，单位ms
 #define delay(ms) vTaskDelay(pdMS_TO_TICKS((ms)))
 
 #ifdef __cplusplus

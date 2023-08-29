@@ -22,7 +22,6 @@
 #include "server/simple_server.hpp"
 
 #define RPC_PORT 12345
-/*the extern context defined in the user code(main.cpp)*/
 
 enum Status { INIT = 0, STANDBY = 1, RUNNING = 2, SUSPEND = 3, TERMINATE = 4, UNKNOWN = 0x80000000 };
 enum Cmd { START = 0, CONNECT = 1, DISCONNECT = 2, TERMINATE_CMD = 3 };

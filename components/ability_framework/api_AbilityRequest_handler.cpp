@@ -137,8 +137,8 @@ esp_err_t api_AbilityRequest_handler(httpd_req_t *req)
     return ESP_OK;
 }
 extern const httpd_uri_t api_AbilityRequest = {.uri = "/api/AbilityRequest",
-                                               .method = HTTP_POST,
-                                               .handler = api_AbilityRequest_handler,
-                                               /* Let's pass response string in user
-                                                * context to demonstrate it's usage */
-                                               .user_ctx = &speakerContext};
+                                                .method = HTTP_POST,
+                                                .handler = api_AbilityRequest_handler,
+                                                /* Let's pass response string in user
+                                                 * context to demonstrate it's usage */
+                                                .user_ctx = &speakerContext};

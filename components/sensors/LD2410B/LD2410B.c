@@ -44,8 +44,8 @@ uint8_t getDistance(uint16_t *distance)
 
     int head = -1;
     for (int i = 0; i < len; i++) {
-        if ((PS_ReceiveBuffer[i] == 0xF4 && PS_ReceiveBuffer[i + 1] == 0xF3) &&
-            (PS_ReceiveBuffer[i + 2] == 0xF2 && PS_ReceiveBuffer[i + 3] == 0xF1)) {
+        if ((PS_ReceiveBuffer[i] == 0xF4) && (PS_ReceiveBuffer[i + 1] == 0xF3) && (PS_ReceiveBuffer[i + 2] == 0xF2) && (
+            PS_ReceiveBuffer[i + 3] == 0xF1)) {
             head = i;
             printf("帧头位于第%d个字节\n", i);
             break;
@@ -72,8 +72,8 @@ uint8_t getDistance(uint16_t *distance)
 
     return PS_ReceiveBuffer[head + 8];
 }
-// FD FC FB FA 04 00 FF 00 01 00 04 03 02 01:命令
-// FD FC FB FA 08 00 FF 01 00 00 01 00 40 00 04 03 02 01 :回复
+// FD FC FB FA 04 00 FF 00 01 00 04 03 02 01:cmd
+// FD FC FB FA 08 00 FF 01 00 00 01 00 40 00 04 03 02 01 :rsp
 uint8_t startConfigure()
 {
     uint8_t data[] = {0xFD, 0xFC, 0xFB, 0xFA, 0x04, 0x00, 0xFF, 0x00, 0x01, 0x00, 0x04, 0x03, 0x02, 0x01};

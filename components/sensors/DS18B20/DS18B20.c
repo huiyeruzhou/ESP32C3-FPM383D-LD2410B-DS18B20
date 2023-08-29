@@ -31,11 +31,8 @@ uint8_t OkBuffer[] = {'O', 'K', '\r', '\n'};
 uint8_t set_hand(void)
 {
     ESP_LOGI(TAG, "Setting to hand mode");
-    /*发送设置手动模式命令*/
     serial_send(size(HandBuffer), HandBuffer);
-    /*接收设置结果*/
     serial_receive(size(OkBuffer), PS_ReceiveBuffer, 1000);
-    /*检查返回值*/
     for (int i = 0; i < size(OkBuffer); i++) {
         if (PS_ReceiveBuffer[i] != OkBuffer[i]) {
             ESP_LOGE(TAG, "%s", PS_ReceiveBuffer);

@@ -41,7 +41,7 @@
 #define CONFIG_GPIO_NUM GPIO_NUM_0
 __attribute__((unused)) static const char *TAG = "Fan Server";
 AbilityContext *speakerContext = NULL;
-
+static bool g_run = false;
 static httpd_handle_t start_webserver(void)
 {
     httpd_handle_t server = NULL;
@@ -128,7 +128,6 @@ int GPIO_Init(void)
     LOGI(TAG, "GPIO Init done.\r\n");
     return ESP_OK;
 }
-bool run = false;
 extern "C" void app_main(void)
 {
     static httpd_handle_t server = NULL;
@@ -166,8 +165,8 @@ extern "C" void app_main(void)
         rpc_status open(sensor_Empty *req, sensor_Empty *rsp) override
         {
             ESP_LOGI(TAG, "open");
-            if (!run) {
-                run = true;
+            if (!g_run) {
+                g_run = true;
                 gpio_set_level(CONFIG_GPIO_NUM, 1);
             }
             return rpc_status::Success;
@@ -175,8 +174,8 @@ extern "C" void app_main(void)
         rpc_status close(sensor_Empty *req, sensor_Empty *rsp) override
         {
             ESP_LOGI(TAG, "close");
-            if (run) {
-                run = false;
+            if (g_run) {
+                g_run = false;
                 gpio_set_level(CONFIG_GPIO_NUM, 0);
             }
             return rpc_status::Success;

@@ -51,8 +51,8 @@ esp_err_t api_AbilityRunning_handler(httpd_req_t *req)
     return ESP_OK;
 }
 extern const httpd_uri_t api_AbilityRunning = {.uri = "/api/AbilityRunning",
-                                               .method = HTTP_GET,
-                                               .handler = api_AbilityRunning_handler,
-                                               /* Let's pass response string in user
+                                                .method = HTTP_GET,
+                                                .handler = api_AbilityRunning_handler,
+                                                /* Let's pass response string in user
                                                 * context to demonstrate it's usage */
-                                               .user_ctx = &speakerContext};
+                                                .user_ctx = &speakerContext};

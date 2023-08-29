@@ -1,3 +1,15 @@
+/*
+ * Copyright (C), 2022-2023, Soochow University & OPPO Mobile Comm Corp., Ltd.
+ *
+ * File: config_wifi.c
+ * Description: wifi config
+ * Version: V1.0.0
+ * Date: 2023/08/23
+ * Author: Soochow University
+ * Revision History:
+ *   Version       Date          Author         Revision Description
+ *  V1.0.0        2023/08/23    Soochow University       Create and initialize
+ */
 #include "config_wifi.h"
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -15,7 +27,7 @@ static const char *g_ip_ip, *g_ip_netmask, *g_ip_gw;
 static bool g_is_ip_connected = false;
 static char g_ip_connected[20];
 
-static int s_retry_num = 0;
+static int g_retry_num = 0;
 
 static esp_err_t example_set_dns_server(esp_netif_t *netif, uint32_t addr, esp_netif_dns_type_t type)
 {
@@ -56,9 +68,9 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
         example_set_static_ip(arg);
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         g_is_ip_connected = false;
-        if (s_retry_num < EXAMPLE_MAXIMUM_RETRY) {
+        if (g_retry_num < EXAMPLE_MAXIMUM_RETRY) {
             esp_wifi_connect();
-            s_retry_num++;
+            g_retry_num++;
             ESP_LOGI(TAG, "retry to connect to the AP");
         } else {
             xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
@@ -70,7 +82,7 @@ static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_
         int len = snprintf(g_ip_connected, sizeof(g_ip_connected), IPSTR, IP2STR(&event->ip_info.ip));
         g_is_ip_connected = true;
         g_ip_connected[len] = 0;
-        s_retry_num = 0;
+        g_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
