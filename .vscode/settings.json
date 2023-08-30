@@ -97,7 +97,11 @@
     "typeindex": "cpp",
     "valarray": "cpp",
     "cfloat": "cpp",
-    "gpio.h": "c"
+    "gpio.h": "c",
+    "csignal": "cpp",
+    "any": "cpp",
+    "codecvt": "cpp",
+    "netfwd": "cpp"
   },
   "C_Cpp.clang_format_path": "",
   "C_Cpp.clang_format_fallbackStyle": "Google",
